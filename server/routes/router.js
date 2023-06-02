@@ -9,4 +9,7 @@ router.post('/register', UserMiddleware, adminController.register)
 router.post('/userInfo', UserMiddleware, adminController.userinfo)
 router.post('/user/index', userController.index)
 
+router.post('/user/userInfo', UserMiddleware, userController.userinfo)
+router.post('/user/index', UserMiddleware, userController.index)
+
 module.exports = router
