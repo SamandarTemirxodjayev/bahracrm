@@ -1,83 +1,64 @@
 <template>
-  <div v-if="loading">
-    <div class="flex items-center justify-center h-screen bg-gray-300">
-      <div class="text-center">
-        <h1 class="text-3xl font-bold mb-4">Loading...</h1>
-        <div class="spinner"></div>
-      </div>
-    </div>
-  </div>
-  <div v-else class="flex items-center justify-center min-h-screen bg-gray-100">
-    <div class="w-full max-w-md bg-white p-6 rounded shadow-md">
-      <h2 class="text-3xl font-bold mb-6 text-center">Kirish</h2>
-      <div class="text-red-500 text-lg font-semibold">{{ errorLog }}</div>
-      <form @submit.prevent="submitForm">
-        <div class="mb-6">
-          <label for="login" class="block text-gray-700 font-semibold mb-2">Login</label>
-          <input id="login" type="text" v-model="login" required
-            class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+  <div v-if="!loading" class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="w-full max-w-md">
+      <form class="bg-white rounded-lg shadow-lg p-8" @submit="handleSubmit">
+        <h2 class="text-2xl font-semibold mb-6">Login</h2>
+        
+        <div class="mb-4">
+          <label for="username" class="block text-gray-700 font-semibold mb-2">Username</label>
+          <input type="text" id="username" v-model="username" class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-indigo-500">
         </div>
-        <div class="mb-6">
-          <label for="password" class="block text-gray-700 font-semibold mb-2">Parol</label>
-          <input id="password" type="password" v-model="password" required
-            class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        
+        <div class="mb-4">
+          <label for="password" class="block text-gray-700 font-semibold mb-2">Password</label>
+          <input type="password" id="password" v-model="password" class="w-full border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:border-indigo-500">
         </div>
-        <button type="submit"
-          class="w-full bg-indigo-600 text-white font-semibold py-2 px-4 rounded hover:bg-indigo-700">Sign In</button>
+        
+        <button type="submit" class="w-full bg-indigo-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-indigo-600 transition-colors">Login</button>
       </form>
     </div>
   </div>
+  <div v-else>
+    <Loader />
+  </div>
 </template>
+
 <script setup>
-import { ref, onMounted } from 'vue';
-import Cookies from 'universal-cookie';
 import axios from 'axios';
-const cookies = new Cookies();
 
-const loading = ref(true);
-let token = cookies.get('token');
+let loading = ref(true)
+let username = ref("");
+let password = ref("");
 
-onMounted(async () => {
-  if (token) {
-    navigateTo('/')
-  } else {
-    loading.value = false;
+
+onMounted(() =>{
+  let token = localStorage.getItem("token");
+  if(token){
+    navigateTo("/");
+  }else{
+    loading.value = false
   }
 })
 
-let login = ref('')
-let password = ref('')
-let errorLog = ref('')
 
-const submitForm = async (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault()
-  await axios.post('http://localhost:7777/api/v1/login', {
-    login: login.value,
-    password: password.value
-  })
-  .then(async response => {
-    cookies.set('token', response.data.token);
-    navigateTo("/");
-  })
-  .catch(error => {
-    errorLog.value += error.response.data.message
-  })
-}
-</script>
-<style>
-.spinner {
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left-color: #1a202c;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
+  loading.value = true
+  try {
+    const res = await axios.post("http://localhost:7777/api/v1/login", {
+      login: username.value,
+      password: password.value,
+    })
+    if (res.data.token) {
+      localStorage.setItem("token", res.data.token)
+      navigateTo("/")
+    }
+  } catch (err) {
+    console.log(err)
   }
+  loading.value = false
 }
-</style>
+definePageMeta({
+  layout: false,
+});
+</script>
