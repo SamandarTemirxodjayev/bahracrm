@@ -12,7 +12,7 @@
     <template v-else>
       <span class="mr-2">Hello</span>
       <span>{{ userData.name }}</span>
-      <div v-if="userData.user_level === 1">
+      <div v-if="userData.user_level === 1 && userData.user_level === 2">
         <AdminRegister />
       </div>
     </template>
