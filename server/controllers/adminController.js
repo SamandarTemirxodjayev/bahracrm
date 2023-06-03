@@ -41,12 +41,14 @@ exports.register = async (req, res) => {
 
     let loginPrefix = "";
   
-    if (user_level === 1) {
+    if (user_level == 1) {
       loginPrefix = "admin_";
-    } else if (user_level === 2) {
+    } else if (user_level == 2) {
       loginPrefix = "pm_";
-    } else if (user_level === 3) {
-      loginPrefix = "user_";
+    } else if (user_level == 3) {
+      loginPrefix = "kassir_";
+    } else if (user_level == 4) {
+      loginPrefix = "realizator_";
     }
   
     let isUnique = false;
@@ -89,7 +91,7 @@ exports.register = async (req, res) => {
   }
 }
 exports.userinfo = async (req, res) => {
-  console.log('userinfo');
+  console.log('userinfo ' + req.userId);
   try {
     const user = await Users.findOne({ login: req.userId });
     if (!user) {
@@ -98,5 +100,18 @@ exports.userinfo = async (req, res) => {
     return res.json(user);
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
+  }
+}
+exports.users = async (req, res) => {
+  console.log('users');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const users = await Users.find({});
+    return res.json(users);
+  } catch (error) {
+    console.log(error);
   }
 }
