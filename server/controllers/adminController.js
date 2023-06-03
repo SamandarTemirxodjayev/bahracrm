@@ -115,3 +115,57 @@ exports.users = async (req, res) => {
     console.log(error);
   }
 }
+exports.user = async (req, res) => {
+  console.log('user');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const user = await Users.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    return res.json(user);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.editUser = async (req, res) => {
+  console.log('editUser');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const user = await Users.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    user.user_level = req.body.user_level;
+    user.name = req.body.name;
+    user.surname = req.body.surname;
+    await user.save();
+    return res.json(user);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.deleteUser = async (req, res) => {
+  console.log('deleteUser');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const user = await Users.findOne({ _id: req.params.id });
+    if (!user) {
+      return res.status(400).json({ message: "User not found" });
+    }
+    await Users.deleteOne({ _id: req.params.id }); // Updated line
+    return res.json({ message: "User deleted" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
