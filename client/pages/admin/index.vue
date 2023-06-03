@@ -2,13 +2,23 @@
   <div v-if="!loading">
     <AdminSidebar>
       <div class="flex items-center">
-        <NuxtLink to="/admin/users">
+        <NuxtLink to="/admin/users" class="m-2">
           <div class="square bg-blue-500 text-white">
             <div class="h-full flex flex-col items-center justify-center">
               <div class="text-5xl font-bold">
                 {{ users.length }}
               </div>
               <div class="mt-4 text-center">Xodimlar soni</div>
+            </div>
+          </div>
+        </NuxtLink>
+        <NuxtLink to="/admin/fridge">
+          <div class="square bg-blue-500 text-white">
+            <div class="h-full flex flex-col items-center justify-center">
+              <div class="text-5xl font-bold">
+                {{ fridges.length }}
+              </div>
+              <div class="mt-4 text-center">Xolodilniklar soni</div>
             </div>
           </div>
         </NuxtLink>
@@ -25,6 +35,7 @@ import axios from "axios";
 
 let loading = ref(true);
 let users = ref([]);
+let fridges = ref([]);
 
 onMounted(async () => {
   let token = localStorage.getItem("token");
@@ -54,7 +65,15 @@ onMounted(async () => {
             },
           }
         );
+        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/fridge/get', null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
         users.value = response.data;
+        fridges.value = fridgesResponse.data;
       } catch (error) {
         console.log(error);
       }

@@ -12,6 +12,11 @@ router.post('/users', UserMiddleware, adminController.users)
 router.post('/user/:id', UserMiddleware, adminController.user)
 router.post('/user/edit/:id', UserMiddleware, adminController.editUser)
 router.delete('/user/:id', UserMiddleware, adminController.deleteUser)
+router.post('/fridge/create', UserMiddleware, adminController.createFridge)
+router.post('/fridge/get', UserMiddleware, adminController.getFridges)
+router.post('/fridge/get/:id', UserMiddleware, adminController.getFridgeId)
+router.post('/fridge/update/:id', UserMiddleware, adminController.updateFridge)
+router.delete('/fridge/:id', UserMiddleware, adminController.deleteFridge)
 
 router.post('/realizator/info', UserMiddleware, realizatorController.realizatorInfo)
 

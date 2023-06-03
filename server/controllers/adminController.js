@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const passwordGenerator = require('../functions/userFunctions.js');
 const Users = require("../models/Users.js");
+const Fridge = require("../models/Fridge.js");
+
+
 
 exports.login = async (req, res) => {
   console.log('login');
@@ -164,6 +167,88 @@ exports.deleteUser = async (req, res) => {
     }
     await Users.deleteOne({ _id: req.params.id }); // Updated line
     return res.json({ message: "User deleted" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+exports.createFridge = async (req, res) => {
+  console.log('createFridge');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const newFridge = new Fridge({
+      name: req.body.name,
+    });
+  
+    await newFridge.save();
+    return res.json(newFridge);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.getFridges = async (req, res) => {
+  console.log('getFridges');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const fridges = await Fridge.find({});
+    return res.json(fridges);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.getFridgeId = async (req, res) => {
+  console.log('getFridgeId');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const fridge = await Fridge.findOne({ _id: req.params.id });
+    if (!fridge) {
+      return res.status(400).json({ message: "Fridge not found" });
+    }
+    return res.json(fridge);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.updateFridge = async (req, res) => {
+  console.log('updateFridge');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const fridge = await Fridge.findOne({ _id: req.params.id });
+    if (!fridge) {
+      return res.status(400).json({ message: "Fridge not found" });
+    }
+    fridge.name = req.body.name;
+    await fridge.save();
+    return res.json(fridge);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.deleteFridge = async (req, res) => {
+  console.log('deleteFridge');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const fridge = await Fridge.findOne({ _id: req.params.id });
+    if (!fridge) {
+      return res.status(400).json({ message: "Fridge not found" });
+    }
+    await Fridge.deleteOne({ _id: req.params.id }); // Updated line
+    return res.json({ message: "Fridge deleted" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });

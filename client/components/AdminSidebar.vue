@@ -17,10 +17,10 @@
             </li>
             <li>
               <NuxtLink
-                to="/admin/"
+                to="/admin/fridge/register"
                 class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
               >
-                About
+                Muzlatgich Qo'shish
               </NuxtLink>
             </li>
             <li>
