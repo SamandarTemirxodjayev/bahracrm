@@ -31,7 +31,9 @@ onMounted(async () => {
       loading.value = false;
       
     } catch (error) {
-      console.error(error);
+      if(error.response.status == 401) {
+        window.location.href = '/logout';
+      }
     }
     
     loading.value = false;

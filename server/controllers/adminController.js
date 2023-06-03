@@ -3,6 +3,7 @@ const passwordGenerator = require('../functions/userFunctions.js');
 const Users = require("../models/Users.js");
 
 exports.login = async (req, res) => {
+  console.log('login');
   const { login, password } = req.body;
   if(!login ||!password) {
     return res.status(400).json({ message: "Please fill all fields" });
@@ -88,6 +89,7 @@ exports.register = async (req, res) => {
   }
 }
 exports.userinfo = async (req, res) => {
+  console.log('userinfo');
   try {
     const user = await Users.findOne({ login: req.userId });
     if (!user) {
