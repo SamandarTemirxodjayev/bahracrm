@@ -26,8 +26,11 @@ onMounted(async () => {
       });
       data.value = response.data;
       if(response.data.user_level === 1) {
-      window.location.href = '/admin';
-    }
+        window.location.href = '/admin';
+      }
+      if(response.data.user_level === 5) {
+        window.location.href = '/sklad';
+      }
       loading.value = false;
       
     } catch (error) {

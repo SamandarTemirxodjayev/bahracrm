@@ -1,26 +1,29 @@
 <template>
   <div v-if="!loading">
-    <AdminSidebar>
+    <SkladSidebar>
       <div class="mt-8">
-        <NuxtLink to="/admin/fridge/register" class="flex justify-end mb-4 mr-10">
-          <button class="text-white bg-blue-500 hover:bg-blue-600 py-2 px-3 rounded-sm font-semibold">
-            Muzlatgich Qo'shish
-          </button>
-        </NuxtLink>
-        <table class="w-full">
+        <table class="w-full border border-gray-300">
           <thead>
             <tr>
-              <th class="px-5 py-3 text-left">Name</th>
+              <th class="px-5 py-3 text-left border border-black">Muzlatgich</th>
+              <th class="px-5 py-3 text-left border border-black">Mahsulotlar</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="user in fridges" :key="user._id" class="hover:bg-gray-200 cursor-pointer">
-              <td class="px-5 py-3"><NuxtLink :to="`/admin/fridge/${user._id}`">{{ user.name }}</NuxtLink></td>
+            <tr v-for="fridge in fridges" :key="fridge._id" class="hover:bg-gray-200">
+              <td class="px-5 py-3 border border-black">
+                <div>{{ fridge.name }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div v-for="(product, index) in fridge.products" :key="index">
+                  {{ product.productId.name }} - {{ product.weight }} KG
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
-    </AdminSidebar>
+    </SkladSidebar>
   </div>
   <div v-else>
     <Loader />
@@ -49,12 +52,12 @@ onMounted(async () => {
           },
         }
       );
-      if (response.data.user_level !== 1) {
+      if (response.data.user_level !== 5) {
         window.location.href = "/";
       }
       try {
         const response = await axios.post(
-          "http://localhost:7777/api/v1/fridge/get",
+          "http://localhost:7777/api/v1/sklad/fridge/get",
           null,
           {
             headers: {
@@ -75,8 +78,4 @@ onMounted(async () => {
     loading.value = false;
   }
 });
-
-const userPasswordf = () => {
-  userPassword.value =!userPassword.value;
-}
 </script>

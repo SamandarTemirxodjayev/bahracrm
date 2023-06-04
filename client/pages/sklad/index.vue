@@ -1,39 +1,47 @@
 <template>
   <div v-if="!loading">
-    <AdminSidebar>
+    <SkladSidebar>
       <div class="flex items-center">
-        <NuxtLink to="/admin/users" class="m-2">
-          <div class="square bg-blue-500 text-white">
-            <div class="h-full flex flex-col items-center justify-center">
-              <div class="text-5xl font-bold">
-                {{ users.length }}
-              </div>
-              <div class="mt-4 text-center">Xodimlar soni</div>
-            </div>
-          </div>
-        </NuxtLink>
-        <NuxtLink to="/admin/fridge">
+        <NuxtLink to="/sklad/fridge">
           <div class="square bg-blue-500 text-white">
             <div class="h-full flex flex-col items-center justify-center">
               <div class="text-5xl font-bold">
                 {{ fridges.length }}
               </div>
-              <div class="mt-4 text-center">Xolodilniklar soni</div>
-            </div>
-          </div>
-        </NuxtLink>
-        <NuxtLink to="/admin/product" class="m-2">
-          <div class="square bg-blue-500 text-white">
-            <div class="h-full flex flex-col items-center justify-center">
-              <div class="text-5xl font-bold">
-                {{ products.length }}
-              </div>
-              <div class="mt-4 text-center">Mahsulotlar soni</div>
+              <div class="mt-4 text-center">Xolodilnik</div>
             </div>
           </div>
         </NuxtLink>
       </div>
-    </AdminSidebar>
+      <div class="mt-8">
+        <table class="w-full border border-gray-300">
+          <thead>
+            <tr>
+              <th class="px-5 py-3 text-left border border-black">Login</th>
+              <th class="px-5 py-3 text-left border border-black">Ish turi</th>
+              <th class="px-5 py-3 text-left border border-black">Sana</th>
+              <th class="px-5 py-3 text-left border border-black">Vaqt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="fridge in history" :key="fridge._id" class="hover:bg-gray-200">
+              <td class="px-5 py-3 border border-black">
+                <div>{{ fridge.login }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ fridge.name }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ fridge.time }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ fridge.date }}</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </SkladSidebar>
   </div>
   <div v-else>
     <Loader />
@@ -44,9 +52,8 @@
 import axios from "axios";
 
 let loading = ref(true);
-let users = ref([]);
 let fridges = ref([]);
-let products = ref([]);
+let history = ref([]);
 
 onMounted(async () => {
   let token = localStorage.getItem("token");
@@ -63,36 +70,26 @@ onMounted(async () => {
           },
         }
       );
-      if (response.data.user_level !== 1) {
+      if (response.data.user_level !== 5) {
         window.location.href = "/";
       }
       try {
-        const response = await axios.post(
-          "http://localhost:7777/api/v1/users",
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/fridge/get', null,
+        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/sklad/fridge/get', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
-        const productsResponse = await axios.post('http://localhost:7777/api/v1/product/get', null,
+        const historyResponse = await axios.post('http://localhost:7777/api/v1/sklad/history', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
-        users.value = response.data;
+        history.value = historyResponse.data;
         fridges.value = fridgesResponse.data;
-        products.value = productsResponse.data;
       } catch (error) {
         console.log(error);
       }

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const passwordGenerator = require('../functions/userFunctions.js');
 const Users = require("../models/Users.js");
 const Fridge = require("../models/Fridge.js");
+const Global = require("../models/Globals.js");
 
 
 
@@ -52,6 +53,8 @@ exports.register = async (req, res) => {
       loginPrefix = "kassir_";
     } else if (user_level == 4) {
       loginPrefix = "realizator_";
+    } else if (user_level == 5) {
+      loginPrefix = "sklad_";
     }
   
     let isUnique = false;
@@ -249,6 +252,88 @@ exports.deleteFridge = async (req, res) => {
     }
     await Fridge.deleteOne({ _id: req.params.id }); // Updated line
     return res.json({ message: "Fridge deleted" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+exports.createProduct = async (req, res) => {
+  console.log('createProduct');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const newProduct = new Global({
+      name: req.body.name,
+    });
+  
+    await newProduct.save();
+    return res.json(newProduct);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.getProducts = async (req, res) => {
+  console.log('getProducts');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const products = await Global.find({});
+    return res.json(products);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.getProductId = async (req, res) => {
+  console.log('getProductId');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const product = await Global.findOne({ _id: req.params.id });
+    if (!product) {
+      return res.status(400).json({ message: "Product not found" });
+    }
+    return res.json(product);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.updateProductId = async (req, res) => {
+  console.log('updateProductId');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const product = await Global.findOne({ _id: req.params.id });
+    if (!product) {
+      return res.status(400).json({ message: "Product not found" });
+    }
+    product.name = req.body.name;
+    await product.save();
+    return res.json(product);
+  } catch (error) {
+    console.log(error);
+  }
+}
+exports.deleteProduct = async (req, res) => {
+  console.log('deleteProduct');
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const product = await Global.findOne({ _id: req.params.id });
+    if (!product) {
+      return res.status(400).json({ message: "Product not found" });
+    }
+    await Global.deleteOne({ _id: req.params.id }); // Updated line
+    return res.json({ message: "Product deleted" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });

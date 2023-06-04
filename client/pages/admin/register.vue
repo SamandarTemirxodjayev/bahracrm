@@ -40,6 +40,7 @@
               <option value="2">PM (Manager)</option>
               <option value="3">Kassir</option>
               <option value="4">Realizator</option>
+              <option value="5">Skladchi (Kirgizuvchi)</option>
             </select>
           </div>
           <div>
