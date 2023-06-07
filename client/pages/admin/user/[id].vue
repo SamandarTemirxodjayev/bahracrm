@@ -45,6 +45,7 @@
               <option value="3">Kassir</option>
               <option value="4">Realizator</option>
               <option value="5">Skladchi (Kirgizuvchi)</option>
+              <option value="6">Razdelkachi</option>
             </select>
           </div>
           <div>

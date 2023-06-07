@@ -1,9 +1,8 @@
 const express = require("express")
 const router = express.Router()
 const adminController = require('../controllers/adminController')
-const userController = require('../controllers/userController')
 const skladController = require('../controllers/skladController')
-const realizatorController = require('../controllers/realizatorController')
+const razdelkaController = require('../controllers/razdelkaController')
 const UserMiddleware = require("../middleware/userMiddleware")
 
 router.post('/login',  adminController.login)
@@ -29,6 +28,10 @@ router.post('/sklad/product/get', UserMiddleware, skladController.getProducts)
 router.post('/sklad/global/add', UserMiddleware, skladController.addGlobal)
 router.post('/sklad/history', UserMiddleware, skladController.historyalast20)
 
-router.post('/realizator/info', UserMiddleware, realizatorController.realizatorInfo)
+router.post('/razdelka/fridge/get', UserMiddleware, razdelkaController.getFridges)
+router.post('/razdelka/product/get', UserMiddleware, razdelkaController.getProducts)
+router.post('/razdelka/global/add', UserMiddleware, razdelkaController.addGlobal)
+router.post('/razdelka/global/get', UserMiddleware, razdelkaController.getGlobal)
+router.post('/razdelka/history', UserMiddleware, razdelkaController.historyalast20)
 
 module.exports = router

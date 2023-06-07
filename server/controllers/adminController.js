@@ -55,6 +55,8 @@ exports.register = async (req, res) => {
       loginPrefix = "realizator_";
     } else if (user_level == 5) {
       loginPrefix = "sklad_";
+    } else if (user_level == 6) {
+      loginPrefix = "razdelka_";
     }
   
     let isUnique = false;
@@ -291,7 +293,7 @@ exports.getProductId = async (req, res) => {
   console.log('getProductId');
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level!== 6 ) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const product = await Global.findOne({ _id: req.params.id });

@@ -1,8 +1,9 @@
 const mongoose = require("mongoose")
 
 const globalSchema = new mongoose.Schema({
-  login: {
-    type: String
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users"
   },
   name: {
     type: String

@@ -1,8 +1,6 @@
 <template>
   <div v-if="!loading">
-    <button @click="logout" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-md transition-colors">
-      Log Out
-    </button>
+    <Loader />
   </div>
   <div v-else><Loader /></div>
 </template>
@@ -30,6 +28,9 @@ onMounted(async () => {
       }
       if(response.data.user_level === 5) {
         window.location.href = '/sklad';
+      }
+      if(response.data.user_level === 6) {
+        window.location.href = '/razdelka';
       }
       loading.value = false;
       

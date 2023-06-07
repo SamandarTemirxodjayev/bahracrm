@@ -1,8 +1,8 @@
 <template>
   <div v-if="!loading">
-    <SkladSidebar>
+    <RazdelkaSidebar>
       <div class="flex items-center">
-        <NuxtLink to="/sklad/fridge">
+        <NuxtLink to="/razdelka/fridge">
           <div class="square bg-blue-500 text-white">
             <div class="h-full flex flex-col items-center justify-center">
               <div class="text-5xl font-bold">
@@ -20,7 +20,6 @@
               <th class="px-5 py-3 text-left border border-black">Login</th>
               <th class="px-5 py-3 text-left border border-black">Ish turi</th>
               <th class="px-5 py-3 text-left border border-black">Mahsulot</th>
-              <th class="px-5 py-3 text-left border border-black">Kompaniya</th>
               <th class="px-5 py-3 text-left border border-black">Vazn</th>
               <th class="px-5 py-3 text-left border border-black">Muzlatgich</th>
               <th class="px-5 py-3 text-left border border-black">Vaqt</th>
@@ -45,7 +44,7 @@
           </tbody>
         </table>
       </div>
-    </SkladSidebar>
+    </RazdelkaSidebar>
   </div>
   <div v-else>
     <Loader />
@@ -74,18 +73,18 @@ onMounted(async () => {
           },
         }
       );
-      if (response.data.user_level !== 5) {
+      if (response.data.user_level !== 6) {
         window.location.href = "/";
       }
       try {
-        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/sklad/fridge/get', null,
+        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/razdelka/fridge/get', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
-        const historyResponse = await axios.post('http://localhost:7777/api/v1/sklad/history', null,
+        const historyResponse = await axios.post('http://localhost:7777/api/v1/razdelka/history', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -7,10 +7,11 @@ exports.getFridges = async (req, res) => {
   console.log('getFridges');
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 5) {
+    if (!currentUser || currentUser.user_level!== 6) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridges = await Fridge.find({}).populate("products.productId");
+    console.log(fridges);
     return res.json(fridges);
   } catch (error) {
     console.log(error);
@@ -20,7 +21,7 @@ exports.getProducts = async (req, res) => {
   console.log('getProducts');
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 5) {
+    if (!currentUser || currentUser.user_level!== 6) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const products = await Global.find({});
@@ -33,16 +34,16 @@ exports.addGlobal = async (req, res) => {
   console.log('addGlobal');
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level !== 5) {
+    if (!currentUser || currentUser.user_level !== 6) {
       return res.status(400).json({ message: "Not allowed" });
     }
-    const { product, companyName, weight, fridge, date, time } = req.body;
-    if (!product || !companyName || !weight || !fridge || !date || !time) {
+    const { product, weight, fridge, date, time } = req.body;
+    if (!product || !weight || !fridge || !date || !time) {
       return res.status(400).json({ message: "All fields are required" });
     }
     const productId = await Global.findById(product);
     const fridgeId = await Fridge.findById(fridge);
-    let text = `Qabul||${productId.name}||${companyName}||${weight}kg||${fridgeId.name}`;
+    let text = `Razdelka Qabul||${productId.name}||${weight}kg||${fridgeId.name}`;
 
     const newHistory = new History({
       userId: currentUser._id,
@@ -76,7 +77,7 @@ exports.historyalast20 = async (req, res) => {
   console.log('historyalast20');
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level !== 5) {
+    if (!currentUser || currentUser.user_level !== 6) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const history = await History.find({ userId: currentUser._id })
@@ -86,5 +87,45 @@ exports.historyalast20 = async (req, res) => {
     return res.json(history);
   } catch (error) {
     console.log(error);
+  }
+};
+exports.getGlobal = async (req, res) => {
+  console.log('getGlobal');
+  const { product, fridge, date, time, weight } = req.body;
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 6) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    if (!product || !fridge || !date || !time || !weight) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    const fridgeDocument = await Fridge.findById(fridge);
+    const productFound = fridgeDocument?.products.find(p => p.productId.toString() === product);
+    if (!productFound) {
+      return res.status(400).json({ message: "Product not found" });
+    }
+    if (productFound.weight < weight) {
+      return res.status(400).json({ message: "Not enough weight" });
+    }
+    let sum = productFound.weight - weight;
+    fridgeDocument.products.at(fridgeDocument.products.indexOf(productFound)).weight = sum;
+    await fridgeDocument.save();
+    const productId = await Global.findById(product);
+    let text = `Razdelka Olish||${productId.name}||${weight}kg||${fridgeDocument.name}`;
+
+    const newHistory = new History({
+      userId: currentUser._id,
+      name: text,
+      time,
+      date
+    });
+    await newHistory.save();
+    productId.weight -= weight;
+    await productId.save();
+    return res.json(fridgeDocument);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
