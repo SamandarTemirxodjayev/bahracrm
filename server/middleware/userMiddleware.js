@@ -6,13 +6,13 @@ function UserMiddleware(req, res, next) {
     return res.status(401).json({ error: "Not Authorized!", message: "Missing authorization header" });
   }
 
-  const accessToken = authorizationHeader.split(' ')[1];
+  const accessToken = authorizationHeader.split(" ")[1];
   if (!accessToken) {
     return res.status(401).json({ error: "Not Authorized!", message: "Invalid access token" });
   }
 
   try {
-    const decoded = jwt.verify(accessToken, 'secret');
+    const decoded = jwt.verify(accessToken, "secret");
     req.userId = decoded.data;
     return next();
   } catch (error) {

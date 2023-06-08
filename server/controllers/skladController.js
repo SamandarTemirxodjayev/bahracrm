@@ -4,7 +4,7 @@ const Users = require("../models/Users");
 const History = require("../models/History");
 
 exports.getFridges = async (req, res) => {
-  console.log('getFridges');
+  console.log("getFridges");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 5) {
@@ -15,9 +15,9 @@ exports.getFridges = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.getProducts = async (req, res) => {
-  console.log('getProducts');
+  console.log("getProducts");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 5) {
@@ -28,9 +28,9 @@ exports.getProducts = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.addGlobal = async (req, res) => {
-  console.log('addGlobal');
+  console.log("addGlobal");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level !== 5) {
@@ -73,7 +73,7 @@ exports.addGlobal = async (req, res) => {
   }
 };
 exports.historyalast20 = async (req, res) => {
-  console.log('historyalast20');
+  console.log("historyalast20");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level !== 5) {
@@ -82,7 +82,7 @@ exports.historyalast20 = async (req, res) => {
     const history = await History.find({ userId: currentUser._id })
       .sort({ _id: -1 }) // Sort in descending order based on _id field
       .limit(20)
-      .populate("userId")
+      .populate("userId");
     return res.json(history);
   } catch (error) {
     console.log(error);

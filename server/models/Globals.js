@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const globalSchema = new mongoose.Schema({
   name: {
@@ -9,6 +9,6 @@ const globalSchema = new mongoose.Schema({
     default: 0
   }
 });
-const Global = mongoose.model('global', globalSchema);
+const Global = mongoose.model("global", globalSchema);
 
-module.exports = Global
+module.exports = Global;

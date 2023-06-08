@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const globalSchema = new mongoose.Schema({
   userId: {
@@ -15,6 +15,6 @@ const globalSchema = new mongoose.Schema({
     type: String
   }
 });
-const Global = mongoose.model('history', globalSchema);
+const History = mongoose.model("history", globalSchema);
 
-module.exports = Global
+module.exports = History;

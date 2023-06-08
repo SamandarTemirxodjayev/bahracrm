@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const passwordGenerator = require('../functions/userFunctions.js');
+const passwordGenerator = require("../functions/userFunctions.js");
 const Users = require("../models/Users.js");
 const Fridge = require("../models/Fridge.js");
 const Global = require("../models/Globals.js");
@@ -7,7 +7,7 @@ const Global = require("../models/Globals.js");
 
 
 exports.login = async (req, res) => {
-  console.log('login');
+  console.log("login");
   const { login, password } = req.body;
   if(!login ||!password) {
     return res.status(400).json({ message: "Please fill all fields" });
@@ -97,9 +97,9 @@ exports.register = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: "Internal server error when saving user" });
   }
-}
+};
 exports.userinfo = async (req, res) => {
-  console.log('userinfo ' + req.userId);
+  console.log("userinfo " + req.userId);
   try {
     const user = await Users.findOne({ login: req.userId });
     if (!user) {
@@ -109,9 +109,9 @@ exports.userinfo = async (req, res) => {
   } catch (err) {
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 exports.users = async (req, res) => {
-  console.log('users');
+  console.log("users");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level !== 1) {
@@ -122,9 +122,9 @@ exports.users = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.user = async (req, res) => {
-  console.log('user');
+  console.log("user");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -138,9 +138,9 @@ exports.user = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.editUser = async (req, res) => {
-  console.log('editUser');
+  console.log("editUser");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -158,9 +158,9 @@ exports.editUser = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.deleteUser = async (req, res) => {
-  console.log('deleteUser');
+  console.log("deleteUser");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level !== 1) {
@@ -176,9 +176,9 @@ exports.deleteUser = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 exports.createFridge = async (req, res) => {
-  console.log('createFridge');
+  console.log("createFridge");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level !== 1) {
@@ -193,9 +193,9 @@ exports.createFridge = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.getFridges = async (req, res) => {
-  console.log('getFridges');
+  console.log("getFridges");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -206,9 +206,9 @@ exports.getFridges = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.getFridgeId = async (req, res) => {
-  console.log('getFridgeId');
+  console.log("getFridgeId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -222,9 +222,9 @@ exports.getFridgeId = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.updateFridge = async (req, res) => {
-  console.log('updateFridge');
+  console.log("updateFridge");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -240,9 +240,9 @@ exports.updateFridge = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.deleteFridge = async (req, res) => {
-  console.log('deleteFridge');
+  console.log("deleteFridge");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -258,9 +258,9 @@ exports.deleteFridge = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 exports.createProduct = async (req, res) => {
-  console.log('createProduct');
+  console.log("createProduct");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -275,9 +275,9 @@ exports.createProduct = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.getProducts = async (req, res) => {
-  console.log('getProducts');
+  console.log("getProducts");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -288,9 +288,9 @@ exports.getProducts = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.getProductId = async (req, res) => {
-  console.log('getProductId');
+  console.log("getProductId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 6 ) {
@@ -304,9 +304,9 @@ exports.getProductId = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.updateProductId = async (req, res) => {
-  console.log('updateProductId');
+  console.log("updateProductId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -322,9 +322,9 @@ exports.updateProductId = async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-}
+};
 exports.deleteProduct = async (req, res) => {
-  console.log('deleteProduct');
+  console.log("deleteProduct");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 1) {
@@ -340,4 +340,4 @@ exports.deleteProduct = async (req, res) => {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};

@@ -1,4 +1,4 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const fridgeSchema = new mongoose.Schema({
   name: {
@@ -17,6 +17,6 @@ const fridgeSchema = new mongoose.Schema({
     }]
   }
 });
-const Fridge = mongoose.model('fridge', fridgeSchema);
+const Fridge = mongoose.model("fridge", fridgeSchema);
 
-module.exports = Fridge
+module.exports = Fridge;
