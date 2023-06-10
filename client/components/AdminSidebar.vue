@@ -5,6 +5,7 @@
         <div class="p-4">
           <NuxtLink to="/admin" class="text-lg font-bold">BAHRA CHICKEN MEAT</NuxtLink>
         </div>
+        <Time />
         <nav class="py-4">
           <ul class="space-y-2">
             <li>
