@@ -72,57 +72,6 @@ exports.addGlobal = async (req, res) => {
     console.log(error);
   }
 };
-
-exports.deleteGlobal = async (req, res) => {
-  try {
-    const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level !== 5) {
-      return res.status(400).json({ message: "Not allowed" });
-    }
-
-    const { product, companyName, weight, fridge, date, time } = req.body;
-    if (!product || !companyName || !weight || !fridge || !date || !time) {
-      return res.status(400).json({ message: "All fields are required" });
-    }
-
-    const { productId, fridgeId } = req.params;
-    const fridgeDocument = await Fridge.findById(fridgeId);
-    const productIndex = fridgeDocument.products.findIndex(p => p.productId.toString() === productId);
-
-    let text = `Rasxod||${productId.name}||${companyName}||${weight}kg||${fridgeId.name}`;
-
-    
-    const newHistory = new History({
-      userId: currentUser._id,
-      name: text,
-      time,
-      date
-    });
-    await newHistory.save();
-
-    if (productIndex === -1) {
-      return res.status(400).json({ message: "Product not found in the fridge" });
-    }
-
-    const deletedProduct = fridgeDocument.products.splice(productIndex, 1)[0];
-    await fridgeDocument.save();
-
-    const globalProduct = await Global.findById(productId);
-    if (!globalProduct) {
-      return res.status(400).json({ message: "Product not found" });
-    }
-
-    globalProduct.weight -= deletedProduct.weight;
-    await globalProduct.save();
-
-    return res.status(200).json({ message: "Global item deleted" });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-
 exports.historyalast20 = async (req, res) => {
   console.log("historyalast20");
   try {
@@ -137,5 +86,47 @@ exports.historyalast20 = async (req, res) => {
     return res.json(history);
   } catch (error) {
     console.log(error);
+  }
+};
+
+exports.deleteGlobal = async (req, res) => {
+  console.log("deleteGlobal");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    console.log(currentUser);
+    if (!currentUser || currentUser.user_level!== 5) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const { product,companyName, fridge, date, time, weight } = req.body;
+    if(!product ||!companyName ||!fridge ||!date ||!time ||!weight){
+      return res.status(400).json({ message: "All fields are required" });
+    }
+    const fridgeDocument = await Fridge.findById(fridge);
+    const productFound = fridgeDocument?.products.find(p => p.productId.toString() === product);
+    if (!productFound) {
+      return res.status(400).json({ message: "Product not found" });
+    }
+    if (productFound.weight < weight) {
+      return res.status(400).json({ message: "Not enough weight" });
+    }
+    let sum = productFound.weight - weight;
+    fridgeDocument.products.at(fridgeDocument.products.indexOf(productFound)).weight = sum;
+    await fridgeDocument.save();
+    const productId = await Global.findById(product);
+    let text = `Qabul||${productId.name}||${companyName}||${weight}kg||${fridgeDocument.name}`;
+
+    const newHistory = new History({
+      userId: currentUser._id,
+      name: text,
+      time,
+      date
+    });
+    await newHistory.save();
+    productId.weight -= weight;
+    await productId.save();
+    return res.json(fridgeDocument);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: "Error" });
   }
 };

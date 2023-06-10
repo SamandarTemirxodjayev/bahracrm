@@ -183,7 +183,7 @@ const handleSubmit = async (e) => {
   loading.value = true;
   try {
     const response = await axios.delete(
-      "http://localhost:7777/api/v1/sklad/global/delete",
+      "http://localhost:7777/api/v1/sklad/global",
       {
         data: {
           product: product.value,
@@ -204,6 +204,7 @@ const handleSubmit = async (e) => {
     success.value = true;
     loading.value = false;
   } catch (error) {
+    console.log(error);
     if (error.response.status === 401) {
       window.location.href = "/logout";
     }
