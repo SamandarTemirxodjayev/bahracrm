@@ -26,6 +26,7 @@ router.delete("/product/:id", UserMiddleware, adminController.deleteProduct);
 router.post("/sklad/fridge/get", UserMiddleware, skladController.getFridges);
 router.post("/sklad/product/get", UserMiddleware, skladController.getProducts);
 router.post("/sklad/global/add", UserMiddleware, skladController.addGlobal);
+router.delete("/sklad/global/delete", UserMiddleware, skladController.deleteGlobal);
 router.post("/sklad/history", UserMiddleware, skladController.historyalast20);
 
 router.post("/razdelka/fridge/get", UserMiddleware, razdelkaController.getFridges);

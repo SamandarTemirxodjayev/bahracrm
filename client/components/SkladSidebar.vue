@@ -18,6 +18,14 @@
             </li>
             <li>
               <NuxtLink
+                to="/sklad/delete"
+                class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
+              >
+                Rasxod
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
                 href="/logout"
                 class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
               >
