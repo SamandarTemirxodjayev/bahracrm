@@ -3,6 +3,7 @@ const router = express.Router();
 const adminController = require("../controllers/adminController");
 const skladController = require("../controllers/skladController");
 const razdelkaController = require("../controllers/razdelkaController");
+const chatController = require("../controllers/chatController");
 const UserMiddleware = require("../middleware/userMiddleware");
 
 router.post("/login",  adminController.login);
@@ -34,5 +35,8 @@ router.post("/razdelka/product/get", UserMiddleware, razdelkaController.getProdu
 router.post("/razdelka/global/add", UserMiddleware, razdelkaController.addGlobal);
 router.post("/razdelka/global/get", UserMiddleware, razdelkaController.getGlobal);
 router.post("/razdelka/history", UserMiddleware, razdelkaController.historyalast20);
+
+router.get("/chat", chatController.getChats);
+router.put("/chat", UserMiddleware, chatController.putChats);
 
 module.exports = router;
