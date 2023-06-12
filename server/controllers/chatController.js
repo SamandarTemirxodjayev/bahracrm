@@ -2,11 +2,8 @@ const Chat = require("../models/Chat.js");
 
 exports.getChats = async (req, res) => {
   try {
-    const chats = await Chat.find()
-      .sort({ _id: -1 })
-      .limit(20);
-      // .sort({ _id: 1 });
-
+    const chats = await Chat.find().sort({ _id: -1 }).limit(20);
+    chats.reverse();
     return res.json(chats);
   } catch (error) {
     return res.status(500).json({ message: "Error retrieving chats" });
