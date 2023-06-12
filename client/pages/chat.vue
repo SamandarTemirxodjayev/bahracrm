@@ -63,7 +63,7 @@ const sendMessage = async () => {
   let token = localStorage.getItem("token");
   try {
     await axios.put(
-      "http://localhost:7777/api/v1/chat",
+      "http://95.163.235.169:7777/api/v1/chat",
       { text: message.value },
       {
         headers: {
@@ -71,7 +71,7 @@ const sendMessage = async () => {
         },
       }
     );
-    const chatResponse = await axios.get("http://localhost:7777/api/v1/chat");
+    const chatResponse = await axios.get("http://95.163.235.169:7777/api/v1/chat");
     messages.value = chatResponse.data;
     message.value = "";
   } catch (error) {
@@ -87,7 +87,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
+        "http://95.163.235.169:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -97,7 +97,7 @@ onMounted(async () => {
       );
       try {
         const chatResponse = await axios.get(
-          "http://localhost:7777/api/v1/chat"
+          "http://95.163.235.169:7777/api/v1/chat"
         );
         messages.value = chatResponse.data;
       } catch (error) {
@@ -114,7 +114,7 @@ onMounted(async () => {
   loading.value = false;
 });
 const updateMessages = async () => {
-  const chatResponse = await axios.get("http://localhost:7777/api/v1/chat");
+  const chatResponse = await axios.get("http://95.163.235.169:7777/api/v1/chat");
   messages.value = chatResponse.data;
 };
 </script>

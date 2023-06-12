@@ -44,7 +44,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
+        "http://95.163.235.169:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -57,7 +57,7 @@ onMounted(async () => {
       }
       try {
         const response = await axios.post(
-          "http://localhost:7777/api/v1/sklad/fridge/get",
+          "http://95.163.235.169:7777/api/v1/sklad/fridge/get",
           null,
           {
             headers: {
