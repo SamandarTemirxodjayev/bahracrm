@@ -1,6 +1,7 @@
 <template>
   <div v-if="!loading" class="bg-gray-300">
     <ChatSidebar>
+      {{data}}
       <div class="max-w-md mx-auto pb-20">
         <div
           v-for="text in messages"
@@ -45,7 +46,6 @@
       </div>
     </ChatSidebar>
   </div>
-
   <div v-else>
     <Loader />
   </div>
@@ -117,6 +117,8 @@ const updateMessages = async () => {
   const chatResponse = await axios.get("http://localhost:7777/api/v1/chat");
   messages.value = chatResponse.data;
 };
+const {data: data} = await useFetch("http://95.163.235.169:7777/api/v1/chat");
+
 </script>
 
 <style>

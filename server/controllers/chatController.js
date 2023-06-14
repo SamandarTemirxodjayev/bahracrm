@@ -1,6 +1,7 @@
 const Chat = require("../models/Chat.js");
 
 exports.getChats = async (req, res) => {
+  console.log("getchats");
   try {
     const chats = await Chat.find().sort({ _id: -1 }).limit(20);
     chats.reverse();
