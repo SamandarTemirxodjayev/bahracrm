@@ -17,7 +17,7 @@ onMounted(async () => {
     window.location.href = '/login';
   } else {
     try {
-      const response = await axios.post('http://localhost:7777/api/v1/userInfo', null, {
+      const response = await axios.post('http://95.163.235.169:7777/api/v1/userInfo', null, {
         headers: {
           Authorization: `Bearer ${token}`
         }

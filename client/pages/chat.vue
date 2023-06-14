@@ -1,7 +1,6 @@
 <template>
   <div v-if="!loading" class="bg-gray-300">
     <ChatSidebar>
-      {{data}}
       <div class="max-w-md mx-auto pb-20">
         <div
           v-for="text in messages"
@@ -56,14 +55,14 @@ import axios from "axios";
 
 let loading = ref(true);
 let message = ref("");
-let messages = ref([]);
+let messages = reactive([]);
 
 const sendMessage = async () => {
   loading.value = true;
   let token = localStorage.getItem("token");
   try {
     await axios.put(
-      "http://localhost:7777/api/v1/chat",
+      "http://95.163.235.169:7777/api/v1/chat",
       { text: message.value },
       {
         headers: {
@@ -71,8 +70,8 @@ const sendMessage = async () => {
         },
       }
     );
-    const chatResponse = await axios.get("http://localhost:7777/api/v1/chat");
-    messages.value = chatResponse.data;
+    const chatResponse = await axios.get("http://95.163.235.169:7777/api/v1/chat");
+    messages = chatResponse.data;
     message.value = "";
   } catch (error) {
     console.log(error);
@@ -87,7 +86,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
+        "http://95.163.235.169:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -97,9 +96,9 @@ onMounted(async () => {
       );
       try {
         const chatResponse = await axios.get(
-          "http://localhost:7777/api/v1/chat"
+          "http://95.163.235.169:7777/api/v1/chat"
         );
-        messages.value = chatResponse.data;
+        messages = chatResponse.data;
       } catch (error) {
         console.log(error);
       }
@@ -114,10 +113,9 @@ onMounted(async () => {
   loading.value = false;
 });
 const updateMessages = async () => {
-  const chatResponse = await axios.get("http://localhost:7777/api/v1/chat");
-  messages.value = chatResponse.data;
+  const chatResponse = await axios.get("http://95.163.235.169:7777/api/v1/chat");
+  messages = chatResponse.data;
 };
-const {data: data} = await useFetch("http://95.163.235.169:7777/api/v1/chat");
 
 </script>
 

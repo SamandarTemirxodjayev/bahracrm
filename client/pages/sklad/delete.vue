@@ -136,7 +136,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
+        "http://95.163.235.169:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -148,7 +148,7 @@ onMounted(async () => {
         window.location.href = "/";
       }
       const productResponse = await axios.post(
-        "http://localhost:7777/api/v1/sklad/product/get",
+        "http://95.163.235.169:7777/api/v1/sklad/product/get",
         null,
         {
           headers: {
@@ -157,7 +157,7 @@ onMounted(async () => {
         }
       );
       const fridgeResponse = await axios.post(
-        "http://localhost:7777/api/v1/sklad/fridge/get",
+        "http://95.163.235.169:7777/api/v1/sklad/fridge/get",
         null,
         {
           headers: {
@@ -183,7 +183,7 @@ const handleSubmit = async (e) => {
   loading.value = true;
   try {
     const response = await axios.delete(
-      "http://localhost:7777/api/v1/sklad/global",
+      "http://95.163.235.169:7777/api/v1/sklad/global",
       {
         data: {
           product: product.value,
