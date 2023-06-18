@@ -6,18 +6,22 @@
       </div>
       <div class="w-full">
         <h1 class="text-3xl text-center">
-          Mahsulot: <span class="font-semibold">{{ razdelka.product }}</span>
-          Og'irlik: <span class="font-semibold">{{ razdelka.weight }} KG</span>
-          Sana: <span class="font-semibold">{{ razdelka.date }}</span>
-          Vaqt: <span class="font-semibold">{{ razdelka.time }}</span>
+          Mahsulot:
+          <span class="font-semibold">{{ razdelka.product }}</span> Og'irlik:
+          <span class="font-semibold">{{ razdelka.weight }} KG</span> Sana:
+          <span class="font-semibold">{{ razdelka.date }}</span> Vaqt:
+          <span class="font-semibold">{{ razdelka.time }}</span>
         </h1>
       </div>
       <div class="my-4">
-        <button @click="addRow" class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">
+        <button
+          @click="addRow"
+          class="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+        >
           Mahsulot Qo'shish
         </button>
       </div>
-        <table class="w-full border border-gray-300">
+      <table class="w-full border border-gray-300">
         <thead>
           <tr>
             <th class="px-5 py-3 text-left border border-black">Mahsulot</th>
@@ -32,19 +36,43 @@
           <!-- Render rows using v-for loop -->
           <tr v-for="(row, index) in rows" :key="row.id">
             <td class="px-5 py-3 border border-black">
-              <select v-model="row.product" id="options" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <option v-for="item in products" :key="item._id" :value="item._id">{{ item.name }}</option>
+              <select
+                v-model="row.product"
+                id="options"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option
+                  v-for="item in products"
+                  :key="item._id"
+                  :value="item._id"
+                >
+                  {{ item.name }}
+                </option>
               </select>
             </td>
             <td class="px-5 py-3 border border-black">
               <div class="flex items-center">
-                <input v-model="row.weight" type="number" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 mx-3">
-                {{row.sum}}
+                <input
+                  v-model="row.weight"
+                  type="number"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 mx-3"
+                />
+                {{ row.sum }}
               </div>
             </td>
             <td class="px-5 py-3 border border-black">
-              <select v-model="row.fridge" id="options" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <option v-for="item in fridges" :key="item._id" :value="item._id">{{ item.name }}</option>
+              <select
+                v-model="row.fridge"
+                id="options"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              >
+                <option
+                  v-for="item in fridges"
+                  :key="item._id"
+                  :value="item._id"
+                >
+                  {{ item.name }}
+                </option>
               </select>
             </td>
             <td class="px-5 py-3 border border-black">
@@ -59,7 +87,12 @@
             </td>
             <td class="px-5 py-3 border border-black">
               <div @click="handleClick(index)">
-                <button type="submit" class="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">Submit</button>
+                <button
+                  type="submit"
+                  class="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                >
+                  Submit
+                </button>
               </div>
             </td>
           </tr>
@@ -68,11 +101,9 @@
               <div>Musur</div>
             </td>
             <td class="px-5 py-3 border border-black text-center">
-              <div>{{musur}}</div>
+              <div>{{ musur }}</div>
             </td>
-            <td class="px-5 py-3 border border-black text-center">
-              -
-            </td>
+            <td class="px-5 py-3 border border-black text-center">-</td>
             <td class="px-5 py-3 border border-black">
               <div>
                 {{ date }}
@@ -83,14 +114,17 @@
                 {{ time }}
               </div>
             </td>
-            <td class="px-5 py-3 border border-black text-center">
-              -
-            </td>
+            <td class="px-5 py-3 border border-black text-center">-</td>
           </tr>
         </tbody>
       </table>
       <div @click="handleTable()" class="mt-8">
-        <button type="submit" class="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600">Submit</button>
+        <button
+          type="submit"
+          class="w-full px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600"
+        >
+          Submit
+        </button>
       </div>
     </RazdelkaSidebar>
   </div>
@@ -227,8 +261,6 @@ const addRow = () => {
   if(rows.length  == 1) {
     window.location.reload();
   }
-
-  console.log(rows);
 };
 
 const handleClick = async (id) =>{
@@ -268,9 +300,36 @@ const calculateMusur = () => {
   let totalSum = 0;
   for (const row of rows) {
     totalSum += row.sum;
-    console.log(row.sum);
   }
   musur.value = razdelka.weight - totalSum;
 };
-// Call the calculation function initially
+const handleTable = async() => {
+  loading.value = true;
+  try {
+    const response = await axios.post(
+      "http://localhost:7777/api/v1/razdelka/add/record",
+      {
+        musur: musur.value,
+        rows: rows,
+        date: date.value,
+        time: time.value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      }
+    );
+    success.value = true;
+    localStorage.removeItem("rows");
+    localStorage.removeItem("razdelka");
+    alert("Mufaqqiyatli Saqlandi");
+    window.location.reload();
+  } catch (error) {
+    if (error.response.status === 401) {
+      window.location.href = "/logout";
+    }
+  }
+  loading.value = false;
+};
 </script>
