@@ -129,3 +129,17 @@ exports.getGlobal = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+exports.getProduct = async (req, res) => {
+  console.log("getProduct");
+  const { id } = req.params;
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 6) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const productFound = await Global.findById(id);
+    return res.json(productFound);
+  } catch (error) {
+    console.log(error);
+  }
+};

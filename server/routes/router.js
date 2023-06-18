@@ -32,6 +32,7 @@ router.post("/sklad/history", UserMiddleware, skladController.historyalast20);
 
 router.post("/razdelka/fridge/get", UserMiddleware, razdelkaController.getFridges);
 router.post("/razdelka/product/get", UserMiddleware, razdelkaController.getProducts);
+router.post("/razdelka/product/get/:id", UserMiddleware, razdelkaController.getProduct);
 router.post("/razdelka/global/add", UserMiddleware, razdelkaController.addGlobal);
 router.post("/razdelka/global/get", UserMiddleware, razdelkaController.getGlobal);
 router.post("/razdelka/history", UserMiddleware, razdelkaController.historyalast20);
