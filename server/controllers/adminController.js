@@ -335,7 +335,7 @@ exports.deleteProduct = async (req, res) => {
       return res.status(400).json({ message: "Product not found" });
     }
     await Global.deleteOne({ _id: req.params.id }); // Updated line
-    return res.json({ message: "Product deleted" });
+    return res.json({ message: "Product deleted succesfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
