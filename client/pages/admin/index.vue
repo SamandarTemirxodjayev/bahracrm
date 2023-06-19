@@ -55,7 +55,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
+        "http://95.163.235.169:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -68,7 +68,7 @@ onMounted(async () => {
       }
       try {
         const response = await axios.post(
-          "http://localhost:7777/api/v1/users",
+          "http://95.163.235.169:7777/api/v1/users",
           null,
           {
             headers: {
@@ -76,14 +76,14 @@ onMounted(async () => {
             },
           }
         );
-        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/fridge/get', null,
+        const fridgesResponse = await axios.post('http://95.163.235.169:7777/api/v1/fridge/get', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
-        const productsResponse = await axios.post('http://localhost:7777/api/v1/product/get', null,
+        const productsResponse = await axios.post('http://95.163.235.169:7777/api/v1/product/get', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
