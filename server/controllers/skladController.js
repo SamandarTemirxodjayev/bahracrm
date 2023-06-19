@@ -113,7 +113,7 @@ exports.deleteGlobal = async (req, res) => {
     fridgeDocument.products.at(fridgeDocument.products.indexOf(productFound)).weight = sum;
     await fridgeDocument.save();
     const productId = await Global.findById(product);
-    let text = `Qabul||${productId.name}||${companyName}||${weight}kg||${fridgeDocument.name}`;
+    let text = `Rasxod||${productId.name}||${companyName}||${weight}kg||${fridgeDocument.name}`;
 
     const newHistory = new History({
       userId: currentUser._id,

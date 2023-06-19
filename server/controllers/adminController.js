@@ -201,7 +201,7 @@ exports.getFridges = async (req, res) => {
     if (!currentUser || currentUser.user_level!== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
-    const fridges = await Fridge.find({});
+    const fridges = await Fridge.find({}).populate("products.productId");
     return res.json(fridges);
   } catch (error) {
     console.log(error);
@@ -339,5 +339,21 @@ exports.deleteProduct = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.historya = async (req, res) => {
+  console.log("historya");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const history = await History.find({ userId: currentUser._id })
+      .sort({ _id: -1 }) // Sort in descending order based on _id field
+      .populate("userId");
+    return res.json(history);
+  } catch (error) {
+    console.log(error);
   }
 };

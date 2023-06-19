@@ -11,11 +11,16 @@
           <thead>
             <tr>
               <th class="px-5 py-3 text-left">Name</th>
+              <th class="px-5 py-3 text-left">Vazn</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="user in products" :key="user._id" class="hover:bg-gray-200 cursor-pointer">
-              <td class="px-5 py-3"><NuxtLink :to="`/admin/product/${user._id}`">{{ user.name }}</NuxtLink></td>
+              <td class="px-5 py-3"><div>{{ user.name }}</div></td>
+              <td class="px-5 py-3"><div>{{ user.weight }} Kg</div></td>
+              <!-- <td class="px-5 py-3"><div v-for="(product, index) in user.products" :key="index">
+                {{ user }}
+                </div></td> -->
             </tr>
           </tbody>
         </table>
@@ -62,6 +67,7 @@ onMounted(async () => {
             },
           }
         );
+        console.log(response);
         products.value = response.data;
       } catch (error) {
         console.log(error);
