@@ -26,11 +26,10 @@
             </li>
             <li>
               <NuxtLink
-                href="/logout"
+                to="/razdelka/fridge"
                 class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
               >
-              
-                Chiqish
+                Muzlatgich
               </NuxtLink>
             </li>
             <li>
@@ -41,8 +40,19 @@
                 Chat
               </NuxtLink>
             </li>
+            
+          <li>
+              <NuxtLink
+                href="/logout"
+                class="block px-4 py-20 text-xl text-red-500"
+              >
+              
+                Chiqish
+              </NuxtLink>
+            </li>
           </ul>
         </nav>
+       
       </div>
       <div class="flex-1 p-8">
         <slot></slot>
@@ -50,3 +60,10 @@
     </div>
   </div>
 </template>
+
+<style>
+.py-20 {
+  padding-top: 24rem;
+  padding-bottom: 0;
+}
+</style>

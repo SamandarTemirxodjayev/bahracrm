@@ -11,11 +11,16 @@
           <thead>
             <tr>
               <th class="px-5 py-3 text-left">Name</th>
+              <th class="px-5 py-3 text-left">Kg</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="user in fridges" :key="user._id" class="hover:bg-gray-200 cursor-pointer">
-              <td class="px-5 py-3"><NuxtLink :to="`/admin/fridge/${user._id}`">{{ user.name }}</NuxtLink></td>
+              <td class="px-5 py-3"><div>{{ user.name }}</div></td>
+              <td class="px-5 py-3"><div v-for="(products, index) in user.products" :key="index">
+                {{ products.productId.name }} - {{ products.weight }}
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>

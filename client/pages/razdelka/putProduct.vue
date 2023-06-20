@@ -24,7 +24,7 @@
       <table class="w-full border border-gray-300">
         <thead>
           <tr>
-            <th class="px-5 py-3 text-left border border-black">Mahsulot</th>
+            <th class="px-5 py-3 text-left border border-black">Mahsulot nomi</th>
             <th class="px-5 py-3 text-left border border-black">Vazn</th>
             <th class="px-5 py-3 text-left border border-black">Muzlatgich</th>
             <th class="px-5 py-3 text-left border border-black">Sana</th>

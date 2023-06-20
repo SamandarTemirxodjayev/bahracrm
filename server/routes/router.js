@@ -23,6 +23,7 @@ router.post("/product/get", UserMiddleware, adminController.getProducts);
 router.post("/product/get/:id", UserMiddleware, adminController.getProductId);
 router.post("/product/update/:id", UserMiddleware, adminController.updateProductId);
 router.delete("/product/:id", UserMiddleware, adminController.deleteProduct);
+router.post("/admin/history", UserMiddleware, adminController.historya);
 
 router.post("/sklad/fridge/get", UserMiddleware, skladController.getFridges);
 router.post("/sklad/product/get", UserMiddleware, skladController.getProducts);
