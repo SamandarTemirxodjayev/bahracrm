@@ -146,7 +146,7 @@ exports.getProduct = async (req, res) => {
 };
 exports.addRecord = async (req, res) => {
   console.log("addRecord");
-  const { rows, musur, date, time } = req.body;
+  const { rows, musur, date, time, allweight } = req.body;
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level!== 6) {
@@ -159,7 +159,8 @@ exports.addRecord = async (req, res) => {
       rows,
       musur,
       date,
-      time
+      time,
+      about: allweight
     });
     await newRecord.save();
     return res.json(newRecord);
@@ -167,8 +168,8 @@ exports.addRecord = async (req, res) => {
     console.log(error);
   }
 };
-exports.getRecords = async (req, res) => {
-  console.log("getRecords");
+exports.getRecord = async (req, res) => {
+  console.log("getRecord");
   const {id} = req.params;
   try {
     const currentUser = await Users.findOne({ login: req.userId });
@@ -176,6 +177,19 @@ exports.getRecords = async (req, res) => {
       return res.status(400).json({ message: "Not allowed" });
     }
     const records = await Record.findById(id);
+    return res.json(records);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.getRecords = async (req, res) => {
+  console.log("getRecords");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 6) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const records = await Record.find().populate("rows.product").populate("rows.fridge").populate("about.product").populate("about.fridge");
     return res.json(records);
   } catch (error) {
     console.log(error);

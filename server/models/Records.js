@@ -4,7 +4,7 @@ const globalSchema = new mongoose.Schema({
   rows: [{
     product: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Product",
+      ref: "global",
       required: true,
     },
     weight: {
@@ -13,13 +13,34 @@ const globalSchema = new mongoose.Schema({
     },
     fridge: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Fridge",
+      ref: "fridge",
       required: true,
     },
     sum: {
       type: Number,
       required: true,
     },
+  }],
+  about:[{
+    date:{
+      type: String
+    },
+    fridge:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "fridge",
+      required: true
+    },
+    product:{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "global",
+      required: true
+    },
+    time:{
+      type: String
+    },
+    weight:{
+      type: Number
+    }
   }],
   musur: {
     type: String

@@ -37,7 +37,8 @@ router.post("/razdelka/global/add", UserMiddleware, razdelkaController.addGlobal
 router.post("/razdelka/global/get", UserMiddleware, razdelkaController.getGlobal);
 router.post("/razdelka/history", UserMiddleware, razdelkaController.historyalast20);
 router.post("/razdelka/add/record", UserMiddleware, razdelkaController.addRecord);
-router.post("/razdelka/get/record/:id", UserMiddleware, razdelkaController.getRecords);
+router.post("/razdelka/get/records", UserMiddleware, razdelkaController.getRecords);
+router.post("/razdelka/get/record/:id", UserMiddleware, razdelkaController.getRecord);
 
 router.get("/chat", chatController.getChats);
 router.put("/chat", UserMiddleware, chatController.putChats);

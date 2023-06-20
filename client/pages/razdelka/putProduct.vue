@@ -163,7 +163,7 @@ onMounted(async () => {
     razdelka = JSON.parse(razdelkatoken);
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -175,7 +175,7 @@ onMounted(async () => {
         window.location.href = "/";
       }
       const productResponse = await axios.post(
-        "http://95.163.235.169:7777/api/v1/razdelka/product/get",
+        "http://localhost:7777/api/v1/razdelka/product/get",
         null,
         {
           headers: {
@@ -184,7 +184,7 @@ onMounted(async () => {
         }
       );
       const fridgeResponse = await axios.post(
-        "http://95.163.235.169:7777/api/v1/razdelka/fridge/get",
+        "http://localhost:7777/api/v1/razdelka/fridge/get",
         null,
         {
           headers: {
@@ -193,7 +193,7 @@ onMounted(async () => {
         }
       );
       const razdelkaResponse = await axios.post(
-        "http://95.163.235.169:7777/api/v1/razdelka/product/get/" + razdelka.product,
+        "http://localhost:7777/api/v1/razdelka/product/get/" + razdelka.product,
         null,
         {
           headers: {
@@ -223,7 +223,7 @@ const handleSubmit = async (e) => {
   loading.value = true;
   try {
     const response = await axios.post(
-      "http://95.163.235.169:7777/api/v1/razdelka/global/add",
+      "http://localhost:7777/api/v1/razdelka/global/add",
       {
         product: product.value,
         fridge: fridge.value,
@@ -273,7 +273,7 @@ const handleClick = async (id) =>{
   rows[id].sum += rows[id].weight;
   try {
     const response = await axios.post(
-      "http://95.163.235.169:7777/api/v1/razdelka/global/add",
+      "http://localhost:7777/api/v1/razdelka/global/add",
       {
         product: rows[id].product,
         fridge: rows[id].fridge,
@@ -307,12 +307,13 @@ const handleTable = async() => {
   loading.value = true;
   try {
     const response = await axios.post(
-      "http://95.163.235.169:7777/api/v1/razdelka/add/record",
+      "http://localhost:7777/api/v1/razdelka/add/record",
       {
         musur: musur.value,
         rows: rows,
         date: date.value,
         time: time.value,
+        allweight: localStorage.getItem("razdelka")? JSON.parse(localStorage.getItem("razdelka")) : []
       },
       {
         headers: {
