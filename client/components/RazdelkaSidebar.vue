@@ -44,7 +44,7 @@
           <li>
               <NuxtLink
                 href="/logout"
-                class="block px-4 py-20 text-xl text-red-500"
+                class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
               >
               
                 Chiqish
@@ -52,7 +52,6 @@
             </li>
           </ul>
         </nav>
-       
       </div>
       <div class="flex-1 p-8">
         <slot></slot>
