@@ -16,7 +16,7 @@
           </thead>
           <tbody>
             <tr v-for="user in products" :key="user._id" class="hover:bg-gray-200 cursor-pointer">
-              <td class="px-5 py-3"><div>{{ user.name }}</div></td>
+              <td class="px-5 py-3"><NuxtLink :to="`/admin/product/${user._id}`">{{ user.name }}</NuxtLink></td>
               <td class="px-5 py-3"><div>{{ user.weight }} Kg</div></td>
               <!-- <td class="px-5 py-3"><div v-for="(product, index) in user.products" :key="index">
                 {{ user }}
@@ -46,7 +46,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -59,7 +59,7 @@ onMounted(async () => {
       }
       try {
         const response = await axios.post(
-          "http://95.163.235.169:7777/api/v1/product/get",
+          "http://localhost:7777/api/v1/product/get",
           null,
           {
             headers: {

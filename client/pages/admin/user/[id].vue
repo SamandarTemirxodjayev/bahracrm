@@ -87,7 +87,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -100,7 +100,7 @@ onMounted(async () => {
       }
       try {
         const response = await axios.post(
-          "http://95.163.235.169:7777/api/v1/user/" + route.params.id,
+          "http://localhost:7777/api/v1/user/" + route.params.id,
           null,
           {
             headers: {
@@ -134,7 +134,7 @@ const handleSubmit = async (e) => {
   }
   try {
     const response = await axios.post(
-      "http://95.163.235.169:7777/api/v1/user/edit/" + route.params.id,
+      "http://localhost:7777/api/v1/user/edit/" + route.params.id,
       {
         name: name.value,
         surname: surname.value,
@@ -164,7 +164,7 @@ const deleteUser = async () => {
   }
   try {
     const response = await axios.delete(
-      "http://95.163.235.169:7777/api/v1/user/" + route.params.id,
+      "http://localhost:7777/api/v1/user/" + route.params.id,
       {
         headers: {
           Authorization: `Bearer ${token}`,

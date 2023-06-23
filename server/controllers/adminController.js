@@ -202,6 +202,7 @@ exports.getFridges = async (req, res) => {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridges = await Fridge.find({}).populate("products.productId");
+    console.log(fridges);
     return res.json(fridges);
   } catch (error) {
     console.log(error);
@@ -293,7 +294,7 @@ exports.getProductId = async (req, res) => {
   console.log("getProductId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 6 ) {
+    if (!currentUser || currentUser.user_level!== 1 ) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const product = await Global.findOne({ _id: req.params.id });

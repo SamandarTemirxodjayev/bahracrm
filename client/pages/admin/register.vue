@@ -68,7 +68,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        'http://95.163.235.169:7777/api/v1/userInfo',
+        'http://localhost:7777/api/v1/userInfo',
         null,
         {
           headers: {
@@ -107,7 +107,7 @@ const handleSubmit = async (e) => {
   console.log(name.value, surname.value, user_level.value);
   try {
     const response = await axios.post(
-      'http://95.163.235.169:7777/api/v1/register',
+      'http://localhost:7777/api/v1/register',
       {
         name: name.value,
         surname: surname.value,
