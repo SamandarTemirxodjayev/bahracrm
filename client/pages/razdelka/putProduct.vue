@@ -313,6 +313,7 @@ const handleTable = async() => {
         rows: rows,
         date: date.value,
         time: time.value,
+        allweight: localStorage.getItem("razdelka")? JSON.parse(localStorage.getItem("razdelka")) : []
       },
       {
         headers: {
