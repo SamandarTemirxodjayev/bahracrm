@@ -40,8 +40,13 @@ const globalSchema = new mongoose.Schema({
     },
     weight:{
       type: Number
-    }
+    },
   }],
+  userId:{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "users",
+    required: true
+  },
   musur: {
     type: String
   },

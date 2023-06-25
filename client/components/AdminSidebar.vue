@@ -42,6 +42,14 @@
             </li>
             <li>
               <NuxtLink
+                to="/admin/razdelkaHistory"
+                class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
+              >
+                Razdelka Ma'lumot
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
                 href="/logout"
                 class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
               >

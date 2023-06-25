@@ -24,6 +24,10 @@ router.post("/product/get/:id", UserMiddleware, adminController.getProductId);
 router.post("/product/update/:id", UserMiddleware, adminController.updateProductId);
 router.delete("/product/:id", UserMiddleware, adminController.deleteProduct);
 router.post("/admin/history", UserMiddleware, adminController.historya);
+router.post("/admin/lasthistory", UserMiddleware, adminController.lasthistory20);
+router.post("/admin/history/:id", UserMiddleware, adminController.historywithid);
+router.post("/admin/get/records", UserMiddleware, adminController.getRecords);
+router.post("/admin/get/record/:id", UserMiddleware, adminController.getRecord);
 
 router.post("/sklad/fridge/get", UserMiddleware, skladController.getFridges);
 router.post("/sklad/product/get", UserMiddleware, skladController.getProducts);
@@ -38,8 +42,6 @@ router.post("/razdelka/global/add", UserMiddleware, razdelkaController.addGlobal
 router.post("/razdelka/global/get", UserMiddleware, razdelkaController.getGlobal);
 router.post("/razdelka/history", UserMiddleware, razdelkaController.historyalast20);
 router.post("/razdelka/add/record", UserMiddleware, razdelkaController.addRecord);
-router.post("/razdelka/get/records", UserMiddleware, razdelkaController.getRecords);
-router.post("/razdelka/get/record/:id", UserMiddleware, razdelkaController.getRecord);
 
 router.get("/chat", chatController.getChats);
 router.put("/chat", UserMiddleware, chatController.putChats);

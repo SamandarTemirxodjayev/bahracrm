@@ -51,7 +51,6 @@
 import axios from "axios";
 
 let loading = ref(true);
-let fridges = ref([]);
 let success = ref(false);
 let name = ref("");
 
@@ -84,7 +83,6 @@ onMounted(async () => {
             },
           }
         );
-        fridges.value = response.data;
         name.value = response.data.name;
       } catch (error) {
         console.log(error);

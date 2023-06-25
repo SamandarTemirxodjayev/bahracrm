@@ -33,6 +33,32 @@
           </div>
         </NuxtLink>
       </div>
+      <table class="w-full border border-gray-300 mt-8">
+          <thead>
+            <tr>
+              <th class="px-5 py-3 text-left border border-black">Xodim</th>
+              <th class="px-5 py-3 text-left border border-black">Ish turi</th>
+              <th class="px-5 py-3 text-left border border-black">Vaqti</th>
+              <th class="px-5 py-3 text-left border border-black">Sanasi</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in history" :key="item._id" class="hover:bg-gray-200">
+              <td class="px-5 py-3 border border-black">
+                <span>{{ item.userId.name }} {{ item.userId.surname }}</span>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                {{item.name.replaceAll("||", ", ")}}
+              </td>
+              <td class="px-5 py-3 border border-black">
+                {{item.time}}
+              </td>
+              <td class="px-5 py-3 border border-black">
+                {{item.date}}
+              </td>
+            </tr>
+          </tbody>
+        </table>
     </AdminSidebar>
   </div>
   <div v-else>
@@ -47,6 +73,7 @@ let loading = ref(true);
 let users = ref([]);
 let fridges = ref([]);
 let products = ref([]);
+let history = ref([]);
 
 onMounted(async () => {
   let token = localStorage.getItem("token");
@@ -90,6 +117,12 @@ onMounted(async () => {
             },
           }
         )
+        const responses = await axios.post("http://localhost:7777/api/v1/admin/lasthistory", null, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          })
+        history.value = responses.data;
         users.value = response.data;
         fridges.value = fridgesResponse.data;
         products.value = productsResponse.data;

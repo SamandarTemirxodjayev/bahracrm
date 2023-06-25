@@ -2,8 +2,9 @@ const jwt = require("jsonwebtoken");
 const passwordGenerator = require("../functions/userFunctions.js");
 const Users = require("../models/Users.js");
 const Fridge = require("../models/Fridge.js");
+const History = require("../models/History.js");
 const Global = require("../models/Globals.js");
-
+const Records = require("../models/Records.js");
 
 
 exports.login = async (req, res) => {
@@ -293,7 +294,7 @@ exports.getProductId = async (req, res) => {
   console.log("getProductId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 6 ) {
+    if (!currentUser || currentUser.user_level!== 1 ) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const product = await Global.findOne({ _id: req.params.id });
@@ -349,10 +350,77 @@ exports.historya = async (req, res) => {
     if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
-    const history = await History.find({ userId: currentUser._id })
-      .sort({ _id: -1 }) // Sort in descending order based on _id field
+    const page = parseInt(req.query.page) || 1;
+    const history = await History.find()
+      .sort({ _id: -1 })
+      .skip((page - 1) * 20)
+      .limit(20)
       .populate("userId");
     return res.json(history);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+exports.lasthistory20 = async (req, res) => {
+  console.log("lasthistory20");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    
+    const history = await History.find()
+      .sort({ _id: -1 })
+      .limit(20)
+      .populate("userId");
+      
+    return res.json(history);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+exports.historywithid = async (req, res) => {
+  console.log("historywithid");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const history = await History.find({ userId: req.params.id }).populate("userId").sort({ _id: -1 });
+    if (!history) {
+      return res.status(400).json({ message: "History not found" });
+    }
+    return res.json(history);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+exports.getRecord = async (req, res) => {
+  console.log("getRecord");
+  const {id} = req.params;
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const records = await Records.findById(id);
+    return res.json(records);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.getRecords = async (req, res) => {
+  console.log("getRecords");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const records = await Records.find().populate("rows.product").populate("rows.fridge").populate("about.product").populate("about.fridge").populate("userId");
+    return res.json(records);
   } catch (error) {
     console.log(error);
   }
