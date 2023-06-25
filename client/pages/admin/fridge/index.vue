@@ -16,7 +16,11 @@
           </thead>
           <tbody>
             <tr v-for="user in fridges" :key="user._id" class="hover:bg-gray-200 cursor-pointer">
+<<<<<<< HEAD
               <td class="px-5 py-3"><div><NuxtLink :to="`/admin/fridge/${user._id}`">{{ user.name }}</NuxtLink></div></td>
+=======
+              <td class="px-5 py-3"><NuxtLink :to="`/admin/fridge/${user._id}`">{{ user.name }}</NuxtLink></td>
+>>>>>>> 14342d44885684239b49f1635081739fe608af6f
               <td class="px-5 py-3"><div v-for="(products, index) in user.products" :key="index">
                 {{ products.productId.name }} - {{ products.weight }}
                 </div>
@@ -67,6 +71,7 @@ onMounted(async () => {
             },
           }
         );
+        console.log(response);
         fridges.value = response.data;
       } catch (error) {
         console.log(error);

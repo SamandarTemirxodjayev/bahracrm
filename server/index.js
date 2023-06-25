@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 require("dotenv").config();
 
 mongoose.set("strictQuery", false);
-mongoose.connect("mongodb://127.0.0.1:27017/crm?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.9.1", {
+// eslint-disable-next-line no-undef
+mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })
