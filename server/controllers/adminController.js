@@ -203,7 +203,6 @@ exports.getFridges = async (req, res) => {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridges = await Fridge.find({}).populate("products.productId");
-    console.log(fridges);
     return res.json(fridges);
   } catch (error) {
     console.log(error);
