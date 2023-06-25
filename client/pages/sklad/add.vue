@@ -81,7 +81,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        'http://localhost:7777/api/v1/userInfo',
+        'http://95.163.235.169:7777/api/v1/userInfo',
         null,
         {
           headers: {
@@ -92,12 +92,12 @@ onMounted(async () => {
       if (response.data.user_level !== 5) {
         window.location.href = '/';
       }
-      const productResponse = await axios.post('http://localhost:7777/api/v1/sklad/product/get', null, {
+      const productResponse = await axios.post('http://95.163.235.169:7777/api/v1/sklad/product/get', null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      const fridgeResponse = await axios.post('http://localhost:7777/api/v1/sklad/fridge/get', null, {
+      const fridgeResponse = await axios.post('http://95.163.235.169:7777/api/v1/sklad/fridge/get', null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -120,7 +120,7 @@ const handleSubmit = async (e) => {
   loading.value = true;
   try {
     const response = await axios.post(
-      'http://localhost:7777/api/v1/sklad/global/add',
+      'http://95.163.235.169:7777/api/v1/sklad/global/add',
       {
         product: product.value,
         companyName: companyName.value,

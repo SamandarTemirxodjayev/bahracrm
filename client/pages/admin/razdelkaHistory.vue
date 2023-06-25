@@ -58,7 +58,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
+        "http://95.163.235.169:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -70,7 +70,7 @@ onMounted(async () => {
         window.location.href = "/";
       }else{
         try {
-          const res = await axios.post("http://localhost:7777/api/v1/admin/get/records", null, {
+          const res = await axios.post("http://95.163.235.169:7777/api/v1/admin/get/records", null, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

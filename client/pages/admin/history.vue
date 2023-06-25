@@ -67,7 +67,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
+        "http://95.163.235.169:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -79,13 +79,13 @@ onMounted(async () => {
         window.location.href = "/";
       } else {
         try {
-          const response = await axios.post("http://localhost:7777/api/v1/admin/history?page=" + list.value, null, {
+          const response = await axios.post("http://95.163.235.169:7777/api/v1/admin/history?page=" + list.value, null, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           })
           history.value = response.data;
-          const res = await axios.post("http://localhost:7777/api/v1/users", null, {
+          const res = await axios.post("http://95.163.235.169:7777/api/v1/users", null, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -106,7 +106,7 @@ onMounted(async () => {
 const HandleChange = async() => {
   loading.value = true;
   try {
-    const res = await axios.post("http://localhost:7777/api/v1/admin/history/" + user.value, null, {
+    const res = await axios.post("http://95.163.235.169:7777/api/v1/admin/history/" + user.value, null, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
