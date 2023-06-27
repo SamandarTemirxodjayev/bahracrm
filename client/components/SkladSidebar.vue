@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex h-screen bg-gray-100">
+    <div class="flex min-h-screen bg-gray-100 h-full">
       <div class="w-64 bg-white border-r">
         <div class="p-4">
           <NuxtLink to="/sklad" class="text-lg font-bold">BAHRA CHICKEN MEAT</NuxtLink>

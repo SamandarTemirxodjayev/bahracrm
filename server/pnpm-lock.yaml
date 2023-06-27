@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -18,8 +18,8 @@ dependencies:
     specifier: ^9.0.0
     version: 9.0.0
   mongoose:
-    specifier: ^7.2.1
-    version: 7.2.1
+    specifier: ^7.2.2
+    version: 7.2.2
   nodemon:
     specifier: ^2.0.22
     version: 2.0.22
@@ -952,8 +952,8 @@ packages:
       saslprep: 1.0.3
     dev: false
 
-  /mongoose@7.2.1:
-    resolution: {integrity: sha512-c2OOl+ch9NlmPeJw7UjSb2jHNjoOw1XXHyzwygIf4z1GmaBx1OYb8OYqHkYPivvEmfY/vUWZFCgePsDqZgFn2w==}
+  /mongoose@7.2.2:
+    resolution: {integrity: sha512-JPBMTF+oYfLGVFWbHSZ/H+f1GajNanGLYH6c/P0nE3bNJfwGhX573vieGR0kNlNhj3cZk8WCPrnVsTNeUmFUag==}
     engines: {node: '>=14.20.1'}
     dependencies:
       bson: 5.3.0

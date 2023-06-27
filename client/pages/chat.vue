@@ -16,29 +16,31 @@
         <div class="fixed bottom-10 w-full">
           <div class="max-w-md">
             <div class="relative flex">
-              <input
-                v-model="message"
-                placeholder="Type your message"
-                class="w-[1200px] py-2 pl-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
-              />
-              <button
-                @click="sendMessage"
-                class="absolute right-1 bottom-1 flex items-center justify-center w-9 h-9 rounded-full bg-indigo-500 hover:bg-indigo-600 focus:outline-none"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-6 h-6 text-white transform rotate-90"
-                  fill="none"
-                  stroke="currentColor"
+              <form @submit="sendMessage" class="">
+                <input
+                  v-model="message"
+                  placeholder="Type your message"
+                  class="w-[1200px] py-2 pl-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                />
+                <button
+                  type="submit"
+                  class="absolute right-1 bottom-1 flex items-center justify-center w-9 h-9 rounded-full bg-indigo-500 hover:bg-indigo-600 focus:outline-none"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-                  />
-                </svg>
-              </button>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="w-6 h-6 text-white transform rotate-90"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+                    />
+                  </svg>
+                </button>
+              </form>
             </div>
           </div>
         </div>
@@ -57,7 +59,11 @@ let loading = ref(true);
 let message = ref("");
 let messages = reactive([]);
 
-const sendMessage = async () => {
+const sendMessage = async (e) => {
+  e.preventDefault();
+  if (!message.value) {
+    return;
+  }
   loading.value = true;
   let token = localStorage.getItem("token");
   try {
@@ -116,7 +122,6 @@ const updateMessages = async () => {
   const chatResponse = await axios.get("http://95.163.235.169:7777/api/v1/chat");
   messages = chatResponse.data;
 };
-
 </script>
 
 <style>

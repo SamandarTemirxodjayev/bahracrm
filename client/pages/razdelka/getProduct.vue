@@ -14,7 +14,7 @@
         </div>
         <form @submit="handleSubmit">
           <div class="mb-4">
-            <label for="options" class="block mb-2 text-sm font-medium text-gray-700">Joylanadigan Mahsulotni Tanglang</label>
+            <label for="options" class="block mb-2 text-sm font-medium text-gray-700">Olinadigan Mahsulotni Tanglang</label>
             <select v-model="product" id="options" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
               <option v-for="item in products" :key="item._id" :value="item._id">{{ item.name }}</option>
             </select>
@@ -144,7 +144,7 @@ const handleSubmit = async (e) => {
     success.value = true;
     loading.value = false;
   } catch (error) {
-    errorText.value = error.response.data.message;
+    errorText.value = "Mahsulot yetarlicha emas";
     errort.value = true;
     if (error.response.status === 401) {
       window.location.href = '/logout';
