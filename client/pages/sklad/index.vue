@@ -14,13 +14,28 @@
         </NuxtLink>
       </div>
       <div class="mt-8">
+        <select
+          v-model="companyName"
+          @change="HandleChange"
+          id="options"
+          class="my-3 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option value=""></option>
+          <option
+            v-for="item in companies"
+            :key="item._id"
+            :value="item._id"
+          >
+            {{ item.name }} {{ item.surname }}
+          </option>
+        </select>
         <table class="w-full border border-gray-300">
           <thead>
             <tr>
               <th class="px-5 py-3 text-left border border-black">Login</th>
               <th class="px-5 py-3 text-left border border-black">Ish turi</th>
-              <th class="px-5 py-3 text-left border border-black">Mahsulot</th>
               <th class="px-5 py-3 text-left border border-black">Kompaniya</th>
+              <th class="px-5 py-3 text-left border border-black">Mahsulot</th>
               <th class="px-5 py-3 text-left border border-black">Vazn</th>
               <th class="px-5 py-3 text-left border border-black">Muzlatgich</th>
               <th class="px-5 py-3 text-left border border-black">Vaqt</th>
@@ -28,18 +43,30 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="fridge in history" :key="fridge._id" class="hover:bg-gray-200">
+            <tr v-for="historyItem in history" :key="historyItem._id" class="hover:bg-gray-200">
               <td class="px-5 py-3 border border-black">
-                <div>{{ fridge.userId.name }} {{ fridge.userId.surname }}</div>
-              </td>
-              <td class="px-5 py-3 border border-black" v-for="namePart in fridge.name.split('||')" :key="namePart">
-                <div>{{ namePart }}</div>
+                <div>{{ historyItem.userId.name }} {{ historyItem.userId.surname }}</div>
               </td>
               <td class="px-5 py-3 border border-black">
-                <div>{{ fridge.time }}</div>
+                <div>{{ historyItem.do.name }}</div>
               </td>
               <td class="px-5 py-3 border border-black">
-                <div>{{ fridge.date }}</div>
+                <div>{{ historyItem.company.name }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.do.productId.name }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.do.weight }} KG</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.do.fridge.name }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.time }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.date }}</div>
               </td>
             </tr>
           </tbody>
@@ -58,6 +85,8 @@ import axios from "axios";
 let loading = ref(true);
 let fridges = ref([]);
 let history = ref([]);
+let companyName = ref("");
+let companies = ref([]);
 
 onMounted(async () => {
   let token = localStorage.getItem("token");
@@ -66,7 +95,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -78,20 +107,28 @@ onMounted(async () => {
         window.location.href = "/";
       }
       try {
-        const fridgesResponse = await axios.post('http://95.163.235.169:7777/api/v1/sklad/fridge/get', null,
+        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/sklad/fridge/get', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
-        const historyResponse = await axios.post('http://95.163.235.169:7777/api/v1/sklad/history', null,
+        const historyResponse = await axios.post('http://localhost:7777/api/v1/sklad/history', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
+        const companiesResponse = await axios.post('http://localhost:7777/api/v1/sklad/company/get', null,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        companies.value = companiesResponse.data;
         history.value = historyResponse.data;
         fridges.value = fridgesResponse.data;
         console.log(historyResponse.data);
@@ -107,6 +144,14 @@ onMounted(async () => {
     loading.value = false;
   }
 });
+const HandleChange = async() => {
+  const res = await axios.post("http://localhost:7777/api/v1/sklad/history/" + companyName.value, null, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  })
+  history.value = res.data;
+}
 </script>
 <style scoped>
 .square {

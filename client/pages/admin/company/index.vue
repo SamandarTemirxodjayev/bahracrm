@@ -1,29 +1,28 @@
 <template>
   <div v-if="!loading">
-    <SkladSidebar>
+    <AdminSidebar>
       <div class="mt-8">
-        <table class="w-full border border-gray-300">
+        <NuxtLink to="/admin/company/register" class="flex justify-end mb-4 mr-10">
+          <button class="text-white bg-blue-500 hover:bg-blue-600 py-2 px-3 rounded-sm font-semibold">
+            Kompaniyasi Qo'shish
+          </button>
+        </NuxtLink>
+        <table class="w-full">
           <thead>
             <tr>
-              <th class="px-5 py-3 text-left border border-black">Muzlatgich</th>
-              <th class="px-5 py-3 text-left border border-black">Mahsulotlar</th>
+              <th class="px-5 py-3 text-left">Kompaniya Ismi</th>
+              <th class="px-5 py-3 text-left">Kompaniya Turi</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="fridge in fridges" :key="fridge._id" class="hover:bg-gray-200">
-              <td class="px-5 py-3 border border-black">
-                <div>{{ fridge.name }}</div>
-              </td>
-              <td class="px-5 py-3 border border-black">
-                <div v-for="(product, index) in fridge.products" :key="index">
-                  {{ product.productId.name }} - {{ product.weight }} KG
-                </div>
-              </td>
+            <tr v-for="user in imports" :key="user._id" class="hover:bg-gray-200 cursor-pointer">
+              <td class="px-5 py-3"><div><NuxtLink :to="`/admin/company/${user._id}`">{{ user.name }}</NuxtLink></div></td>
+              <td class="px-5 py-3"><div><NuxtLink :to="`/admin/company/${user._id}`">{{ user.type }}</NuxtLink></div></td>
             </tr>
           </tbody>
         </table>
       </div>
-    </SkladSidebar>
+    </AdminSidebar>
   </div>
   <div v-else>
     <Loader />
@@ -35,7 +34,7 @@
 import axios from "axios";
 
 let loading = ref(true);
-let fridges = ref([]);
+let imports = ref([]);
 
 onMounted(async () => {
   let token = localStorage.getItem("token");
@@ -52,12 +51,12 @@ onMounted(async () => {
           },
         }
       );
-      if (response.data.user_level !== 5) {
+      if (response.data.user_level !== 1) {
         window.location.href = "/";
       }
       try {
         const response = await axios.post(
-          "http://localhost:7777/api/v1/sklad/fridge/get",
+          "http://localhost:7777/api/v1/admin/get/company",
           null,
           {
             headers: {
@@ -65,7 +64,7 @@ onMounted(async () => {
             },
           }
         );
-        fridges.value = response.data;
+        imports.value = response.data;
       } catch (error) {
         console.log(error);
       }

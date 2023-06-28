@@ -46,7 +46,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -59,7 +59,7 @@ onMounted(async () => {
       }
       try {
         const response = await axios.post(
-          "http://95.163.235.169:7777/api/v1/fridge/get",
+          "http://localhost:7777/api/v1/fridge/get",
           null,
           {
             headers: {
@@ -80,8 +80,4 @@ onMounted(async () => {
     loading.value = false;
   }
 });
-
-const userPasswordf = () => {
-  userPassword.value =!userPassword.value;
-}
 </script>

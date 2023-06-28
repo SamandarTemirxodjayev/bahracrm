@@ -8,6 +8,8 @@
             <th class="px-5 py-3 text-left border border-black">Mahsulot</th>
             <th class="px-5 py-3 text-left border border-black">Natijalar</th>
             <th class="px-5 py-3 text-left border border-black">Qoldiqlar</th>
+            <th class="px-5 py-3 text-left border border-black">Tugatilgan Vaqti</th>
+            <th class="px-5 py-3 text-left border border-black">Tugatilgan Sanasi</th>
           </tr>
         </thead>
         <tbody>
@@ -26,13 +28,17 @@
               <div v-for="item in item.rows" :key="item._id">
                 <div>Mahsulot Nomi: {{ item.product.name }}</div>
                 <div>Mahsulot Vazni: {{ item.sum }} KG</div>
-                <div>Joylagan Muzlatgich: {{ item.fridge.name }}</div>
-                <div>Tugatilgan vaqt: {{data[0].time}}</div>
-                <div>Tugatilgan sana: {{data[0].date}}</div> <br>
+                <div>Joylagan Muzlatgich: {{ item.fridge.name }}</div><br>
               </div>
             </td>
-            <td class="px-5 py-3 border border-black">
+            <td class="px-5 py-3 border border-black text-center">
               {{item.musur}} KG
+            </td>
+            <td class="px-5 py-3 border border-black text-center">
+              {{item.time}}
+            </td>
+            <td class="px-5 py-3 border border-black text-center">
+              {{item.date}}
             </td>
           </tr>
         </tbody>
@@ -58,7 +64,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -70,7 +76,7 @@ onMounted(async () => {
         window.location.href = "/";
       }else{
         try {
-          const res = await axios.post("http://95.163.235.169:7777/api/v1/admin/get/records", null, {
+          const res = await axios.post("http://localhost:7777/api/v1/admin/get/records", null, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

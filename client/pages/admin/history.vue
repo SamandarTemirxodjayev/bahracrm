@@ -21,6 +21,10 @@
             <tr>
               <th class="px-5 py-3 text-left border border-black">Xodim</th>
               <th class="px-5 py-3 text-left border border-black">Ish turi</th>
+              <th class="px-5 py-3 text-left border border-black">Kompaniya</th>
+              <th class="px-5 py-3 text-left border border-black">Mahsulot</th>
+              <th class="px-5 py-3 text-left border border-black">Vazn</th>
+              <th class="px-5 py-3 text-left border border-black">Muzlatgich</th>
               <th class="px-5 py-3 text-left border border-black">Vaqti</th>
               <th class="px-5 py-3 text-left border border-black">Sanasi</th>
             </tr>
@@ -31,7 +35,19 @@
                 <span>{{ item.userId.name }} {{ item.userId.surname }}</span>
               </td>
               <td class="px-5 py-3 border border-black">
-                {{item.name.replaceAll("||", ", ")}}
+                {{item.do.name}}
+              </td>
+              <td class="px-5 py-3 border border-black">
+                {{item.company.name}} - [ {{ item.company.type }} ]
+              </td>
+              <td class="px-5 py-3 border border-black">
+                {{item.do.productId.name}}
+              </td>
+              <td class="px-5 py-3 border border-black">
+                {{item.do.weight}} KG
+              </td>
+              <td class="px-5 py-3 border border-black">
+                {{item.do.fridge.name}}
               </td>
               <td class="px-5 py-3 border border-black">
                 {{item.time}}
@@ -67,7 +83,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -79,13 +95,13 @@ onMounted(async () => {
         window.location.href = "/";
       } else {
         try {
-          const response = await axios.post("http://95.163.235.169:7777/api/v1/admin/history?page=" + list.value, null, {
+          const response = await axios.post("http://localhost:7777/api/v1/admin/history?page=" + list.value, null, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           })
           history.value = response.data;
-          const res = await axios.post("http://95.163.235.169:7777/api/v1/users", null, {
+          const res = await axios.post("http://localhost:7777/api/v1/users", null, {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -106,7 +122,7 @@ onMounted(async () => {
 const HandleChange = async() => {
   loading.value = true;
   try {
-    const res = await axios.post("http://95.163.235.169:7777/api/v1/admin/history/" + user.value, null, {
+    const res = await axios.post("http://localhost:7777/api/v1/admin/history/" + user.value, null, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },

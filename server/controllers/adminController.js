@@ -5,6 +5,7 @@ const Fridge = require("../models/Fridge.js");
 const History = require("../models/History.js");
 const Global = require("../models/Globals.js");
 const Records = require("../models/Records.js");
+const Company = require("../models/Company.js");
 
 
 exports.login = async (req, res) => {
@@ -355,7 +356,10 @@ exports.historya = async (req, res) => {
       .sort({ _id: -1 })
       .skip((page - 1) * 20)
       .limit(20)
-      .populate("userId");
+      .populate("userId")
+      .populate("company")
+      .populate("do.productId")
+      .populate("do.fridge");
     return res.json(history);
   } catch (error) {
     console.log(error);
@@ -373,7 +377,10 @@ exports.lasthistory20 = async (req, res) => {
     const history = await History.find()
       .sort({ _id: -1 })
       .limit(20)
-      .populate("userId");
+      .populate("userId")
+      .populate("company")
+      .populate("do.productId")
+      .populate("do.fridge");
       
     return res.json(history);
   } catch (error) {
@@ -388,7 +395,13 @@ exports.historywithid = async (req, res) => {
     if (!currentUser || currentUser.user_level!== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
-    const history = await History.find({ userId: req.params.id }).populate("userId").sort({ _id: -1 });
+    const history = await History.find({ userId: req.params.id })
+      .populate("userId")
+      .populate("userId")
+      .populate("company")
+      .populate("do.productId")
+      .populate("do.fridge")
+      .sort({ _id: -1 });
     if (!history) {
       return res.status(400).json({ message: "History not found" });
     }
@@ -421,6 +434,90 @@ exports.getRecords = async (req, res) => {
     }
     const records = await Records.find().populate("rows.product").populate("rows.fridge").populate("about.product").populate("about.fridge").populate("userId");
     return res.json(records);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.addCompany = async (req, res) => {
+  console.log("addCompany");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const newCompany = new Company({
+      name: req.body.name,
+      type: req.body.type,
+    });
+  
+    await newCompany.save();
+    return res.json(newCompany);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.getCompany = async (req, res) => {
+  console.log("getCompanies");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const companies = await Company.find({});
+    return res.json(companies);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.getCompanyById = async (req, res) => {
+  console.log("getCompanyById");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const importt = await Company.findOne({ _id: req.params.id });
+    if (!importt) {
+      return res.status(400).json({ message: "Company not found" });
+    }
+    return res.json(importt);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.deleteCompany = async (req, res) => {
+  console.log("deleteCompany");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const importt = await Company.findOne({ _id: req.params.id });
+    if (!importt) {
+      return res.status(400).json({ message: "Company not found" });
+    }
+    await Company.deleteOne({ _id: req.params.id }); // Updated line
+    return res.json({ message: "Company deleted succesfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+exports.updateCompany = async (req, res) => {
+  console.log("updateCompany");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level!== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const importt = await Company.findOne({ _id: req.params.id });
+    if (!importt) {
+      return res.status(400).json({ message: "Company not found" });
+    }
+    importt.name = req.body.name;
+    importt.type = req.body.type;
+    await importt.save();
+    return res.json(importt);
   } catch (error) {
     console.log(error);
   }

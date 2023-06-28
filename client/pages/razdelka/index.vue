@@ -27,18 +27,27 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="fridge in history" :key="fridge._id" class="hover:bg-gray-200">
+            <tr v-for="historyItem in history" :key="historyItem._id" class="hover:bg-gray-200">
               <td class="px-5 py-3 border border-black">
-                <div>{{ fridge.userId.name }} {{ fridge.userId.surname }}</div>
-              </td>
-              <td class="px-5 py-3 border border-black" v-for="namePart in fridge.name.split('||')" :key="namePart">
-                <div>{{ namePart }}</div>
+                <div>{{ historyItem.userId.name }} {{ historyItem.userId.surname }}</div>
               </td>
               <td class="px-5 py-3 border border-black">
-                <div>{{ fridge.time }}</div>
+                <div>{{ historyItem.do.name }}</div>
               </td>
               <td class="px-5 py-3 border border-black">
-                <div>{{ fridge.date }}</div>
+                <div>{{ historyItem.do.productId.name }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.do.weight }} KG</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.do.fridge.name }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.time }}</div>
+              </td>
+              <td class="px-5 py-3 border border-black">
+                <div>{{ historyItem.date }}</div>
               </td>
             </tr>
           </tbody>
@@ -65,7 +74,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -77,14 +86,14 @@ onMounted(async () => {
         window.location.href = "/";
       }
       try {
-        const fridgesResponse = await axios.post('http://95.163.235.169:7777/api/v1/razdelka/fridge/get', null,
+        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/razdelka/fridge/get', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         )
-        const historyResponse = await axios.post('http://95.163.235.169:7777/api/v1/razdelka/history', null,
+        const historyResponse = await axios.post('http://localhost:7777/api/v1/razdelka/history', null,
           {
             headers: {
               Authorization: `Bearer ${token}`,

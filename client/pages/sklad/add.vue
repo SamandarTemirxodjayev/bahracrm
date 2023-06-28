@@ -15,8 +15,10 @@
             </select>
           </div>
           <div class="mb-4">
-            <label class="block mb-2 text-sm font-medium text-gray-700">Jo'natuvchi Tashkilot Nomini kiriting</label>
-            <input v-model="companyName" type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" />
+            <label class="block mb-2 text-sm font-medium text-gray-700">Jo'natuvchi Tashkilotni Tanglang</label>
+            <select v-model="companyName" id="options" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              <option v-for="item in companies" :key="item._id" :value="item._id">{{ item.name }}</option>
+            </select>
           </div>
           <div class="mb-4">
             <label class="block mb-2 text-sm font-medium text-gray-700">Mahsulot Vazni (KG)</label>
@@ -54,6 +56,7 @@ import axios from 'axios';
 let loading = ref(true);
 let products = ref([]);
 let fridges = ref([]);
+let companies = ref([]);
 let product = ref(null)
 let fridge = ref(null)
 let companyName = ref('')
@@ -81,7 +84,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        'http://95.163.235.169:7777/api/v1/userInfo',
+        'http://localhost:7777/api/v1/userInfo',
         null,
         {
           headers: {
@@ -92,16 +95,22 @@ onMounted(async () => {
       if (response.data.user_level !== 5) {
         window.location.href = '/';
       }
-      const productResponse = await axios.post('http://95.163.235.169:7777/api/v1/sklad/product/get', null, {
+      const productResponse = await axios.post('http://localhost:7777/api/v1/sklad/product/get', null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
-      const fridgeResponse = await axios.post('http://95.163.235.169:7777/api/v1/sklad/fridge/get', null, {
+      const fridgeResponse = await axios.post('http://localhost:7777/api/v1/sklad/fridge/get', null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
+      const companiesResponse = await axios.post('http://localhost:7777/api/v1/sklad/company/import/get', null, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      companies.value = companiesResponse.data;
       products.value = productResponse.data;
       fridges.value = fridgeResponse.data;
       loading.value = false;
@@ -120,7 +129,7 @@ const handleSubmit = async (e) => {
   loading.value = true;
   try {
     const response = await axios.post(
-      'http://95.163.235.169:7777/api/v1/sklad/global/add',
+      'http://localhost:7777/api/v1/sklad/global/add',
       {
         product: product.value,
         companyName: companyName.value,

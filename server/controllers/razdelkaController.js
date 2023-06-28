@@ -31,7 +31,7 @@ exports.getProducts = async (req, res) => {
   }
 };
 exports.addGlobal = async (req, res) => {
-  console.log("addGlobal");
+  console.log("addGlobal Razdelka");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
     if (!currentUser || currentUser.user_level !== 6) {
@@ -42,12 +42,15 @@ exports.addGlobal = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
     const productId = await Global.findById(product);
-    const fridgeId = await Fridge.findById(fridge);
-    let text = `Razdelka Qabul||${productId.name}||${weight}kg||${fridgeId.name}`;
 
     const newHistory = new History({
       userId: currentUser._id,
-      name: text,
+      do: {
+        name: "Mahsulot Maydalandi",
+        productId: product,
+        weight: weight,
+        fridge: fridge
+      },
       time,
       date
     });
@@ -57,13 +60,10 @@ exports.addGlobal = async (req, res) => {
     const productFound = fridgeDocument.products.find(p => p.productId.toString() === product);
 
     if (productFound) {
-      // Product with the given ID exists, update the weight
-      productFound.weight += weight; // Add the desired number to the existing weight
+      productFound.weight += weight;
     } else {
-      // Product with the given ID does not exist, create a new one
-      fridgeDocument.products.push({ productId: product, weight: weight }); // Create a new product object
+      fridgeDocument.products.push({ productId: product, weight: weight });
     }
-
     await fridgeDocument.save();
     productId.weight += weight;
     await productId.save();
@@ -81,9 +81,11 @@ exports.historyalast20 = async (req, res) => {
       return res.status(400).json({ message: "Not allowed" });
     }
     const history = await History.find({ userId: currentUser._id })
-      .sort({ _id: -1 }) // Sort in descending order based on _id field
-      .limit(20)
-      .populate("userId");
+      .sort({ _id: -1 })
+      .limit(50)
+      .populate("userId")
+      .populate("do.productId")
+      .populate("do.fridge");
     return res.json(history);
   } catch (error) {
     console.log(error);
@@ -112,11 +114,15 @@ exports.getGlobal = async (req, res) => {
     fridgeDocument.products.at(fridgeDocument.products.indexOf(productFound)).weight = sum;
     await fridgeDocument.save();
     const productId = await Global.findById(product);
-    let text = `Razdelka Olish||${productId.name}||${weight}kg||${fridgeDocument.name}`;
 
     const newHistory = new History({
       userId: currentUser._id,
-      name: text,
+      do: {
+        name: "Mahsulot Olindi",
+        productId: product,
+        weight: weight,
+        fridge: fridge
+      },
       time,
       date
     });

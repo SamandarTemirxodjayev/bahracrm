@@ -43,7 +43,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        "http://95.163.235.169:7777/api/v1/userInfo",
+        "http://localhost:7777/api/v1/userInfo",
         null,
         {
           headers: {
@@ -56,7 +56,7 @@ onMounted(async () => {
       }
       try {
         const response = await axios.post(
-          "http://95.163.235.169:7777/api/v1/product/get",
+          "http://localhost:7777/api/v1/product/get",
           null,
           {
             headers: {

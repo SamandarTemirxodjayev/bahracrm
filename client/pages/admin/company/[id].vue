@@ -7,7 +7,7 @@
           :class="success ? 'block' : 'hidden'"
         >
           <div class="text-lg font-semibold">
-            Mahsulot muvaffaqiyatli yangilandi
+            Kompaniya muvaffaqiyatli yangilandi
           </div>
         </div>
         <form @submit="handleSubmit">
@@ -15,7 +15,7 @@
             <label
               for="name"
               class="block mb-2 text-sm font-medium text-gray-700"
-              >Mahsulot Ismi</label
+              >Kompaniya Ismi</label
             >
             <input
               id="name"
@@ -23,6 +23,14 @@
               type="text"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             />
+          </div>
+          <div class="mb-4">
+            <label for="options" class="block mb-2 text-sm font-medium text-gray-700">Kompaniya Turini Tanglang</label>
+            <select v-model="type" id="options" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              <option value="import">Import</option>
+              <option value="export">Export</option>
+              <option value="bahra">Bahra</option>
+            </select>
           </div>
           <div>
             <button
@@ -34,10 +42,10 @@
           </div>
         </form>
         <button
-          @click="deleteProduct"
+          @click="deleteFridge"
           class=" my-2 w-full px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
         >
-          Mahsulotni o'chirish
+          Kompaniyani o'chirish
         </button>
       </div>
     </AdminSidebar>
@@ -51,8 +59,10 @@
 import axios from "axios";
 
 let loading = ref(true);
+let fridges = ref([]);
 let success = ref(false);
 let name = ref("");
+let type = ref("");
 
 const route = useRoute();
 onMounted(async () => {
@@ -75,7 +85,7 @@ onMounted(async () => {
       }
       try {
         const response = await axios.post(
-          "http://localhost:7777/api/v1/product/get/" + route.params.id,
+          "http://localhost:7777/api/v1/admin/get/company/" + route.params.id,
           null,
           {
             headers: {
@@ -83,7 +93,9 @@ onMounted(async () => {
             },
           }
         );
+        fridges.value = response.data;
         name.value = response.data.name;
+        type.value = response.data.type;
       } catch (error) {
         console.log(error);
       }
@@ -102,9 +114,10 @@ const handleSubmit = async (e) => {
   loading.value = true;
   try {
     const response = await axios.post(
-      "http://localhost:7777/api/v1/product/update/" + route.params.id,
+      "http://localhost:7777/api/v1/admin/update/company/" + route.params.id,
       {
         name: name.value,
+        type: type.value,
       },
       {
         headers: {
@@ -120,7 +133,7 @@ const handleSubmit = async (e) => {
     }
   }
 };
-const deleteProduct = async () => {
+const deleteFridge = async () => {
   loading.value = true;
   let token = localStorage.getItem("token");
   if (!token) {
@@ -128,14 +141,14 @@ const deleteProduct = async () => {
   }
   try {
     const response = await axios.delete(
-      "http://localhost:7777/api/v1/product/" + route.params.id,
+      "http://localhost:7777/api/v1/admin/company/" + route.params.id,
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
-    window.location.href = "/admin/product";
+    window.location.href = "/admin/company";
   } catch (error) {
     console.log(error);
   }

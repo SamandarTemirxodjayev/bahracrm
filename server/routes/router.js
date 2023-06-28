@@ -28,12 +28,21 @@ router.post("/admin/lasthistory", UserMiddleware, adminController.lasthistory20)
 router.post("/admin/history/:id", UserMiddleware, adminController.historywithid);
 router.post("/admin/get/records", UserMiddleware, adminController.getRecords);
 router.post("/admin/get/record/:id", UserMiddleware, adminController.getRecord);
+router.post("/admin/add/company", UserMiddleware, adminController.addCompany);
+router.post("/admin/get/company", UserMiddleware, adminController.getCompany);
+router.post("/admin/get/company/:id", UserMiddleware, adminController.getCompanyById);
+router.delete("/admin/company/:id", UserMiddleware, adminController.deleteCompany);
+router.post("/admin/update/company/:id", UserMiddleware, adminController.updateCompany);
 
 router.post("/sklad/fridge/get", UserMiddleware, skladController.getFridges);
 router.post("/sklad/product/get", UserMiddleware, skladController.getProducts);
 router.post("/sklad/global/add", UserMiddleware, skladController.addGlobal);
 router.delete("/sklad/global", UserMiddleware, skladController.deleteGlobal);
 router.post("/sklad/history", UserMiddleware, skladController.historyalast20);
+router.post("/sklad/history/:id", UserMiddleware, skladController.historyByCompanyId);
+router.post("/sklad/company/import/get", UserMiddleware, skladController.CompanyGetImport);
+router.post("/sklad/company/export/get", UserMiddleware, skladController.CompanyGetExport);
+router.post("/sklad/company/get", UserMiddleware, skladController.CompanyGet);
 
 router.post("/razdelka/fridge/get", UserMiddleware, razdelkaController.getFridges);
 router.post("/razdelka/product/get", UserMiddleware, razdelkaController.getProducts);

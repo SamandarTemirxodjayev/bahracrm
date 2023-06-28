@@ -37,9 +37,6 @@
             <label for="options" class="block mb-2 text-sm font-medium text-gray-700">Xodim Lavozimi</label>
             <select v-model="user_level" id="options" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
               <option value="1">Admin (Direktor)</option>
-              <option value="2">PM (Manager)</option>
-              <option value="3">Kassir</option>
-              <option value="4">Realizator</option>
               <option value="5">Skladchi (Kirgizuvchi)</option>
               <option value="6">Razdelkachi</option>
             </select>
@@ -68,7 +65,7 @@ onMounted(async () => {
   } else {
     try {
       const response = await axios.post(
-        'http://95.163.235.169:7777/api/v1/userInfo',
+        'http://localhost:7777/api/v1/userInfo',
         null,
         {
           headers: {
@@ -107,7 +104,7 @@ const handleSubmit = async (e) => {
   console.log(name.value, surname.value, user_level.value);
   try {
     const response = await axios.post(
-      'http://95.163.235.169:7777/api/v1/register',
+      'http://localhost:7777/api/v1/register',
       {
         name: name.value,
         surname: surname.value,

@@ -2,12 +2,13 @@ const Fridge = require("../models/Fridge");
 const Global = require("../models/Globals");
 const Users = require("../models/Users");
 const History = require("../models/History");
+const Company = require("../models/Company");
 
 exports.getFridges = async (req, res) => {
   console.log("getFridges");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 5) {
+    if (!currentUser || currentUser.user_level !== 5) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridges = await Fridge.find({}).populate("products.productId");
@@ -20,7 +21,7 @@ exports.getProducts = async (req, res) => {
   console.log("getProducts");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 5) {
+    if (!currentUser || currentUser.user_level !== 5) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const products = await Global.find({});
@@ -41,28 +42,31 @@ exports.addGlobal = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
     const productId = await Global.findById(product);
-    const fridgeId = await Fridge.findById(fridge);
-    let text = `Qabul||${productId.name}||${companyName}||${weight}kg||${fridgeId.name}`;
 
     const newHistory = new History({
       userId: currentUser._id,
-      name: text,
+      do: {
+        name: "import",
+        productId: product,
+        weight: weight,
+        fridge: fridge,
+      },
+      company: companyName,
       time,
-      date
+      date,
     });
     await newHistory.save();
 
     const fridgeDocument = await Fridge.findById(fridge);
-    const productFound = fridgeDocument.products.find(p => p.productId.toString() === product);
+    const productFound = fridgeDocument.products.find(
+      (p) => p.productId.toString() === product
+    );
 
     if (productFound) {
-      // Product with the given ID exists, update the weight
-      productFound.weight += weight; // Add the desired number to the existing weight
+      productFound.weight += weight;
     } else {
-      // Product with the given ID does not exist, create a new one
-      fridgeDocument.products.push({ productId: product, weight: weight }); // Create a new product object
+      fridgeDocument.products.push({ productId: product, weight: weight });
     }
-
     await fridgeDocument.save();
     productId.weight += weight;
     await productId.save();
@@ -82,7 +86,10 @@ exports.historyalast20 = async (req, res) => {
     const history = await History.find({ userId: currentUser._id })
       .sort({ _id: -1 }) // Sort in descending order based on _id field
       .limit(20)
-      .populate("userId");
+      .populate("userId")
+      .populate("company")
+      .populate("do.productId")
+      .populate("do.fridge");
     return res.json(history);
   } catch (error) {
     console.log(error);
@@ -93,16 +100,17 @@ exports.deleteGlobal = async (req, res) => {
   console.log("deleteGlobal");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    console.log(currentUser);
-    if (!currentUser || currentUser.user_level!== 5) {
+    if (!currentUser || currentUser.user_level !== 5) {
       return res.status(400).json({ message: "Not allowed" });
     }
-    const { product,companyName, fridge, date, time, weight } = req.body;
-    if(!product ||!companyName ||!fridge ||!date ||!time ||!weight){
+    const { product, companyName, fridge, date, time, weight } = req.body;
+    if (!product || !companyName || !fridge || !date || !time || !weight) {
       return res.status(400).json({ message: "All fields are required" });
     }
     const fridgeDocument = await Fridge.findById(fridge);
-    const productFound = fridgeDocument?.products.find(p => p.productId.toString() === product);
+    const productFound = fridgeDocument?.products.find(
+      (p) => p.productId.toString() === product
+    );
     if (!productFound) {
       return res.status(400).json({ message: "Product not found" });
     }
@@ -110,16 +118,23 @@ exports.deleteGlobal = async (req, res) => {
       return res.status(400).json({ message: "Not enough weight" });
     }
     let sum = productFound.weight - weight;
-    fridgeDocument.products.at(fridgeDocument.products.indexOf(productFound)).weight = sum;
+    fridgeDocument.products.at(
+      fridgeDocument.products.indexOf(productFound)
+    ).weight = sum;
     await fridgeDocument.save();
     const productId = await Global.findById(product);
-    let text = `Rasxod||${productId.name}||${companyName}||${weight}kg||${fridgeDocument.name}`;
 
     const newHistory = new History({
       userId: currentUser._id,
-      name: text,
+      do: {
+        name: "export",
+        productId: product,
+        weight: weight,
+        fridge: fridge,
+      },
+      company: companyName,
       time,
-      date
+      date,
     });
     await newHistory.save();
     productId.weight -= weight;
@@ -128,5 +143,63 @@ exports.deleteGlobal = async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(400).json({ message: "Error" });
+  }
+};
+exports.CompanyGetImport = async (req, res) => {
+  console.log("CompanyGetImport");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 5) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const imports = await Company.find({ type: "import" });
+    return res.json(imports);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.CompanyGetExport = async (req, res) => {
+  console.log("CompanyGetExport");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 5) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const exports = await Company.find({ type: "export" });
+    return res.json(exports);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.CompanyGet = async (req, res) => {
+  console.log("CompanyGet");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 5) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const company = await Company.find();
+    return res.json(company);
+  } catch (error) {
+    console.log(error);
+  }
+};
+exports.historyByCompanyId = async (req, res) => {
+  console.log("historyByCompanyId");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 5) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const history = await History.find({ userId: currentUser._id, company: req.params.id})
+      .sort({ _id: -1 }) // Sort in descending order based on _id field
+      .limit(20)
+      .populate("userId")
+      .populate("company")
+      .populate("do.productId")
+      .populate("do.fridge");
+    return res.json(history);
+  } catch (error) {
+    console.log(error);
   }
 };

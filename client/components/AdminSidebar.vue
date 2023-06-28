@@ -42,6 +42,14 @@
             </li>
             <li>
               <NuxtLink
+                to="/admin/company"
+                class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
+              >
+                Kompaniyalar
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
                 to="/admin/razdelkaHistory"
                 class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
               >
