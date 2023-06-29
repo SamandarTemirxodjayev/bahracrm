@@ -16,11 +16,11 @@
         <div class="fixed bottom-10 w-full">
           <div class="max-w-md">
             <div class="relative flex">
-              <form @submit="sendMessage" class="">
+              <form @submit="sendMessage" class="w-[500px]">
                 <input
                   v-model="message"
                   placeholder="Type your message"
-                  class="w-[1200px] py-2 pl-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
+                  class="w-full py-2 pl-4 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500"
                 />
                 <button
                   type="submit"
@@ -64,7 +64,6 @@ const sendMessage = async (e) => {
   if (!message.value) {
     return;
   }
-  loading.value = true;
   let token = localStorage.getItem("token");
   try {
     await axios.put(
@@ -82,7 +81,6 @@ const sendMessage = async (e) => {
   } catch (error) {
     console.log(error);
   }
-  loading.value = false;
 };
 
 onMounted(async () => {

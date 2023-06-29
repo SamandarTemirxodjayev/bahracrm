@@ -55,4 +55,6 @@ router.post("/razdelka/add/record", UserMiddleware, razdelkaController.addRecord
 router.get("/chat", chatController.getChats);
 router.put("/chat", UserMiddleware, chatController.putChats);
 
+router.post("/changePassword", UserMiddleware, adminController.changePassword);
+
 module.exports = router;

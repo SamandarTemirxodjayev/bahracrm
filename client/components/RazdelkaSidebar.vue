@@ -34,6 +34,14 @@
             </li>
             <li>
               <NuxtLink
+                to="/changePassword"
+                class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
+              >
+                Parolni O'zgartirish
+              </NuxtLink>
+            </li>
+            <li>
+              <NuxtLink
                 href="/chat"
                 class="block px-4 py-2 text-xl text-gray-700 hover:bg-gray-200"
               >

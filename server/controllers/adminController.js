@@ -522,3 +522,17 @@ exports.updateCompany = async (req, res) => {
     console.log(error);
   }
 };
+exports.changePassword = async (req, res) => {
+  console.log("changePassword");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    currentUser.password = req.body.password;
+    await currentUser.save();
+    return res.json(currentUser);
+  } catch (error) {
+    console.log(error);
+  }
+};
