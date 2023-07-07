@@ -32,50 +32,22 @@
 
 
 <script setup>
-import axios from "axios";
-
 let loading = ref(true);
 let fridges = ref([]);
 
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 5) {
-        window.location.href = "/";
-      }
-      try {
-        const response = await axios.post(
-          "http://localhost:7777/api/v1/sklad/fridge/get",
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        fridges.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 5) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const response = await $host.get("/sklad/fridge");
+    fridges.value = response.data;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
+
 </script>

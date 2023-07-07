@@ -83,8 +83,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
-
 let loading = ref(true);
 let users = ref([]);
 let fridges = ref([]);
@@ -92,67 +90,24 @@ let products = ref([]);
 let history = ref([]);
 
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = "/";
-      }
-      try {
-        const response = await axios.post(
-          "http://localhost:7777/api/v1/users",
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/fridge/get', null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        const productsResponse = await axios.post('http://localhost:7777/api/v1/product/get', null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        const responses = await axios.post("http://localhost:7777/api/v1/admin/lasthistory", null, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-        history.value = responses.data;
-        users.value = response.data;
-        fridges.value = fridgesResponse.data;
-        products.value = productsResponse.data;
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const response = await $host.post("/users");
+    users.value = response.data;
+    const fridgesResponse = await $host.get('/admin/fridge')
+    fridges.value = fridgesResponse.data;
+    const productsResponse = await $host.get('/admin/product/', null,)
+    products.value = productsResponse.data;
+    const responses = await $host.post("/admin/lasthistory")
+    history.value = responses.data;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
 </script>
 <style scoped>

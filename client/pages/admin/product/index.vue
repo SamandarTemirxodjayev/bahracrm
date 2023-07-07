@@ -22,6 +22,9 @@
           </tbody>
         </table>
       </div>
+      <div>
+        <Pie :data="data" :options="options" />
+      </div>
     </AdminSidebar>
   </div>
   <div v-else>
@@ -31,51 +34,38 @@
 
 
 <script setup>
-import axios from "axios";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js'
+import { Pie } from 'vue-chartjs'
+
+ChartJS.register(ArcElement, Tooltip, Legend)
 
 let loading = ref(true);
 let products = ref([]);
+let data = ref()
+let options = ref({
+  responsive: true,
+  maintainAspectRatio: false
+})
 
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = "/";
-      }
-      try {
-        const response = await axios.post(
-          "http://localhost:7777/api/v1/product/get",
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        products.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
-  } 
+    const response = await $host.get("/admin/product");
+    products.value = response.data;
+    data.value = {
+      labels: response.data.map((item) => item.name),
+      datasets: [{
+        backgroundColor: ['#00FF00', '#00FFFF', '#FFA500', '#FFFF00', '#FF00FF', '#7FFFD4'],
+        data: response.data.map((item) => item.weight),
+      }]
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  loading.value = false;
 });
-
 </script>

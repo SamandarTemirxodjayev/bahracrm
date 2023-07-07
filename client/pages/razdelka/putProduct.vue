@@ -7,7 +7,7 @@
       <div class="w-full">
         <h1 class="text-3xl text-center">
           Mahsulot:
-          <span class="font-semibold">{{ razdelka.product }}</span> Og'irlik:
+          <span class="font-semibold">{{ razdelka.productName }}</span> Og'irlik:
           <span class="font-semibold">{{ razdelka.weight }} KG</span> Sana:
           <span class="font-semibold">{{ razdelka.date }}</span> Vaqt:
           <span class="font-semibold">{{ razdelka.time }}</span>
@@ -134,8 +134,7 @@
 </template>
 
 <script setup>
-import axios from "axios";
-
+import axios from 'axios';
 let loading = ref(true);
 let products = ref([]);
 let fridges = ref([]);
@@ -153,6 +152,7 @@ const updateTimeAndDate = () => {
   time.value = now.toLocaleTimeString();
   date.value = now.toLocaleDateString();
 };
+
 
 onMounted(async () => {
   let token = localStorage.getItem("token");
@@ -174,24 +174,8 @@ onMounted(async () => {
       if (response.data.user_level !== 6) {
         window.location.href = "/";
       }
-      const productResponse = await axios.post(
-        "http://localhost:7777/api/v1/razdelka/product/get",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      const fridgeResponse = await axios.post(
-        "http://localhost:7777/api/v1/razdelka/fridge/get",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const productResponse = await $host.get("/razdelka/product");
+      const fridgeResponse = await $host.get("/razdelka/fridge");
       const razdelkaResponse = await axios.post(
         "http://localhost:7777/api/v1/razdelka/product/get/" + razdelka.product,
         null,

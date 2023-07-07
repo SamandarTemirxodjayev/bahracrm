@@ -54,36 +54,19 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-
 let loading = ref(true);
 
 onMounted(async () => {
-  let token = localStorage.getItem('token');
-  if (!token) {
-    window.location.href = '/login';
-  } else {
-    try {
-      const response = await axios.post(
-        'http://localhost:7777/api/v1/userInfo',
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = '/';
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = '/logout';
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
 
 let name = ref('');
@@ -101,21 +84,12 @@ let data = ref({
 const handleSubmit = async (e) => {
   e.preventDefault();
   loading.value = true;
-  console.log(name.value, surname.value, user_level.value);
   try {
-    const response = await axios.post(
-      'http://localhost:7777/api/v1/register',
-      {
-        name: name.value,
-        surname: surname.value,
-        user_level: user_level.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      }
-    );
+    const response = await $host.post("/register", {
+      name: name.value,
+      surname: surname.value,
+      user_level: user_level.value
+    });
     data.value = response.data;
     success.value = true;
     loading.value = false;
@@ -123,11 +97,9 @@ const handleSubmit = async (e) => {
     surname.value = '';
     user_level.value = null;
   } catch (error) {
-    if (error.response.status === 401) {
-      window.location.href = '/logout';
-    }
-    loading.value = false;
+    console.log(error);
   }
+  loading.value = false;
 }
 
 </script>

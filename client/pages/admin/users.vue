@@ -37,55 +37,25 @@
 
 
 <script setup>
-import axios from "axios";
-
 let loading = ref(true);
 let data = ref(null);
 let userPassword = ref(false);
 let users = ref([]);
 
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = "/";
-      }
-      try {
-        const response = await axios.post(
-          "http://localhost:7777/api/v1/users",
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        users.value = response.data;
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const response = await $host.post("/users");
+    users.value = response.data;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
-
 const userPasswordf = () => {
   userPassword.value =!userPassword.value;
 }

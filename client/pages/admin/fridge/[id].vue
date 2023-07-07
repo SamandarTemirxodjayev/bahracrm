@@ -48,8 +48,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
-
 let loading = ref(true);
 let fridges = ref([]);
 let success = ref(false);
@@ -57,86 +55,39 @@ let name = ref("");
 
 const route = useRoute();
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = "/";
-      }
-      try {
-        const response = await axios.post(
-          "http://localhost:7777/api/v1/fridge/get/" + route.params.id,
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        fridges.value = response.data;
-        name.value = response.data.name;
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const fridgesRes = await $host.get("/admin/fridge/" + route.params.id);
+    fridges.value = fridgesRes.data;
+    name.value = fridgesRes.data.name;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
+
 
 const handleSubmit = async (e) => {
   e.preventDefault();
   loading.value = true;
   try {
-    const response = await axios.post(
-      "http://localhost:7777/api/v1/fridge/update/" + route.params.id,
-      {
-        name: name.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
+    const response = await $host.post("/admin/fridge/" + route.params.id,{
+      name: name.value,
+    });
     success.value = true;
     loading.value = false;
   } catch (error) {
-    if (error.response.status === 401) {
-      window.location.href = "/logout";
-    }
+    console.log(error);
   }
 };
 const deleteFridge = async () => {
   loading.value = true;
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/logout";
-  }
   try {
-    const response = await axios.delete(
-      "http://localhost:7777/api/v1/fridge/" + route.params.id,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const response = await $host.delete("/admin/fridge/" + route.params.id);
     window.location.href = "/admin/fridge";
   } catch (error) {
     console.log(error);

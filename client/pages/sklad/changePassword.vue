@@ -47,13 +47,8 @@ const handleSubmit = async(e) => {
   e.preventDefault()
   if (password.value == password2.value) {
     try {
-      const res = axios.post("http://localhost:7777/api/v1/changePassword", {
+      await $host.post("/changePassword", {
       password: password.value
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + localStorage.getItem("token")
-      }
     })
     success.value = true
     } catch (error) {

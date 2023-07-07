@@ -25,8 +25,16 @@
             />
           </div>
           <div class="mb-4">
-            <label for="options" class="block mb-2 text-sm font-medium text-gray-700">Kompaniya Turini Tanglang</label>
-            <select v-model="type" id="options" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            <label
+              for="options"
+              class="block mb-2 text-sm font-medium text-gray-700"
+              >Kompaniya Turini Tanglang</label
+            >
+            <select
+              v-model="type"
+              id="options"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+            >
               <option value="import">Import</option>
               <option value="export">Export</option>
               <option value="bahra">Bahra</option>
@@ -42,8 +50,8 @@
           </div>
         </form>
         <button
-          @click="deleteFridge"
-          class=" my-2 w-full px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
+          @click="deleteCompany"
+          class="my-2 w-full px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-md hover:bg-red-600"
         >
           Kompaniyani o'chirish
         </button>
@@ -59,98 +67,49 @@
 import axios from "axios";
 
 let loading = ref(true);
-let fridges = ref([]);
 let success = ref(false);
 let name = ref("");
 let type = ref("");
 
 const route = useRoute();
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = "/";
-      }
-      try {
-        const response = await axios.post(
-          "http://localhost:7777/api/v1/admin/get/company/" + route.params.id,
-          null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        fridges.value = response.data;
-        name.value = response.data.name;
-        type.value = response.data.type;
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const response = await $host.get("/admin/company/" + route.params.id);
+    name.value = response.data.name;
+    type.value = response.data.type;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
 
 const handleSubmit = async (e) => {
   e.preventDefault();
   loading.value = true;
-  try {
-    const response = await axios.post(
-      "http://localhost:7777/api/v1/admin/update/company/" + route.params.id,
-      {
-        name: name.value,
-        type: type.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-      }
-    );
-    success.value = true;
-    loading.value = false;
-  } catch (error) {
-    if (error.response.status === 401) {
-      window.location.href = "/logout";
-    }
-  }
+  $host
+    .patch("/admin/company/" + route.params.id, {
+      name: name.value,
+      type: type.value,
+    })
+    .then((res) => {
+      success.value = true;
+      loading.value = false;
+    })
+    .catch((err) => console.log(err));
 };
-const deleteFridge = async () => {
+
+const deleteCompany = async () => {
   loading.value = true;
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/logout";
-  }
-  try {
-    const response = await axios.delete(
-      "http://localhost:7777/api/v1/admin/company/" + route.params.id,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    window.location.href = "/admin/company";
-  } catch (error) {
-    console.log(error);
-  }
-}
+  $host
+    .delete("/admin/company/" + route.params.id)
+    .then((res) => {
+      navigateTo("/admin/company");
+    })
+    .catch((err) => console.log(err));
+};
 </script>

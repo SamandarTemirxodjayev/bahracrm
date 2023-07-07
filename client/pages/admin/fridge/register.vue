@@ -25,33 +25,19 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-
 let loading = ref(true);
 
 onMounted(async () => {
-  let token = localStorage.getItem('token');
-  if (!token) {
-    window.location.href = '/login';
-  } else {
-    try {
-      const response = await axios.post(
-        'http://localhost:7777/api/v1/userInfo',
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = '/logout';
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
 
 let success = ref(false);
@@ -61,24 +47,14 @@ const handleSubmit = async (e) => {
   e.preventDefault();
   loading.value = true;
   try {
-    const response = await axios.post(
-      'http://localhost:7777/api/v1/fridge/create',
-      {
+    const response = await $host.post('/admin/fridge',{
         name: name.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      }
-    );
+    });
     success.value = true;
     name.value = '';
     loading.value = false;
   } catch (error) {
-    if (error.response.status === 401) {
-      window.location.href = '/logout';
-    }
+    console.log(error);
   }
 }
 

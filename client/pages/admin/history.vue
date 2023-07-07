@@ -2,6 +2,7 @@
   <div v-if="!loading">
     <AdminSidebar>
       <div class="mt-8">
+        Xodimni tanlang
         <select
           v-model="user"
           @change="HandleChange"
@@ -14,6 +15,21 @@
             :value="item._id"
           >
             {{ item.name }} {{ item.surname }}
+          </option>
+        </select>
+        Kompaniyani tanlang
+        <select
+          v-model="company"
+          @change="HandleChangeCompany"
+          id="options"
+          class="my-3 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+        >
+          <option
+            v-for="item in companies"
+            :key="item._id"
+            :value="item._id"
+          >
+            {{ item.name }}
           </option>
         </select>
         <table class="w-full border border-gray-300">
@@ -68,69 +84,51 @@
 
 
 <script setup>
-import axios from "axios";
-
 let loading = ref(true);
 let history = ref([]);
 let list = ref(0);
 let users = ref([]);
 let user = ref("");
+let companies = ref([]);
+let company = ref("");
 
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = "/";
-      } else {
-        try {
-          const response = await axios.post("http://localhost:7777/api/v1/admin/history?page=" + list.value, null, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          history.value = response.data;
-          const res = await axios.post("http://localhost:7777/api/v1/users", null, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          users.value = res.data;
-        } catch (error) {
-          console.log(error);
-        }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
-    }
-    loading.value = false;
+    const response = await $host.get("/admin/history?page=" + list.value);
+    history.value = response.data;
+    const resp = await $host.post("/users");
+    users.value = resp.data;
+    const rescompany = await $host.get("/admin/company")
+    companies.value = rescompany.data;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
+
 const HandleChange = async() => {
   loading.value = true;
   try {
-    const res = await axios.post("http://localhost:7777/api/v1/admin/history/" + user.value, null, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    })
+    const res = await $host.get("/admin/history/" + user.value);
     history.value = res.data;
-    loading.value = false;
   } catch (error) { 
     console.log(error);
   }
+  loading.value = false;
+}
+const HandleChangeCompany = async() => {
+  loading.value = true;
+  try {
+    const res = await $host.get("/admin/history/company/" + company.value)
+    history.value = res.data;
+  } catch (error) { 
+    console.log(error);
+  }
+  loading.value = false;
 }
 </script>

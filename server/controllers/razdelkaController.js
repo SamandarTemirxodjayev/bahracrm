@@ -129,7 +129,7 @@ exports.getGlobal = async (req, res) => {
     await newHistory.save();
     productId.weight -= weight;
     await productId.save();
-    return res.json(fridgeDocument);
+    return res.json(productId);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });

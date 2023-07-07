@@ -80,8 +80,6 @@
 </template>
 
 <script setup>
-import axios from "axios";
-
 let loading = ref(true);
 let fridges = ref([]);
 let history = ref([]);
@@ -89,67 +87,26 @@ let companyName = ref("");
 let companies = ref([]);
 
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 5) {
-        window.location.href = "/";
-      }
-      try {
-        const fridgesResponse = await axios.post('http://localhost:7777/api/v1/sklad/fridge/get', null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        const historyResponse = await axios.post('http://localhost:7777/api/v1/sklad/history', null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        const companiesResponse = await axios.post('http://localhost:7777/api/v1/sklad/company/get', null,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        companies.value = companiesResponse.data;
-        history.value = historyResponse.data;
-        fridges.value = fridgesResponse.data;
-        console.log(historyResponse.data);
-      } catch (error) {
-        console.log(error);
-      }
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 5) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const fridgesResponse = await $host.get("/sklad/fridge");
+    fridges.value = fridgesResponse.data;
+    const historyResponse = await $host.get('/sklad/history')
+    history.value = historyResponse.data;
+    const companiesResponse = await $host.get('/sklad/company')
+    companies.value = companiesResponse.data;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
 });
+
 const HandleChange = async() => {
-  const res = await axios.post("http://localhost:7777/api/v1/sklad/history/" + companyName.value, null, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  })
+  const res = await $host.get("/sklad/history/" + companyName.value)
   history.value = res.data;
 }
 </script>

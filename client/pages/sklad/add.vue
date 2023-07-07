@@ -51,8 +51,6 @@
 </template>
 
 <script setup>
-import axios from 'axios';
-
 let loading = ref(true);
 let products = ref([]);
 let fridges = ref([]);
@@ -76,83 +74,46 @@ const updateTimeAndDate = () => {
   time.value = now.toLocaleTimeString();
   date.value = now.toLocaleDateString();
 };
-
 onMounted(async () => {
-  let token = localStorage.getItem('token');
-  if (!token) {
-    window.location.href = '/login';
-  } else {
-    try {
-      const response = await axios.post(
-        'http://localhost:7777/api/v1/userInfo',
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 5) {
-        window.location.href = '/';
-      }
-      const productResponse = await axios.post('http://localhost:7777/api/v1/sklad/product/get', null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      const fridgeResponse = await axios.post('http://localhost:7777/api/v1/sklad/fridge/get', null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      const companiesResponse = await axios.post('http://localhost:7777/api/v1/sklad/company/import/get', null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      companies.value = companiesResponse.data;
-      products.value = productResponse.data;
-      fridges.value = fridgeResponse.data;
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = '/logout';
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 5) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const productResponse = await $host.get('/sklad/product')
+    const fridgeResponse = await $host.get('/sklad/fridge')
+    const companiesResponse = await $host.get('/sklad/company/import')
+    companies.value = companiesResponse.data;
+    products.value = productResponse.data;
+    fridges.value = fridgeResponse.data;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
   updateTimeAndDate(); // Call the method to set initial values
   setInterval(updateTimeAndDate, 500); 
 });
+
 const handleSubmit = async (e) => {
   e.preventDefault();
   loading.value = true;
   try {
-    const response = await axios.post(
-      'http://localhost:7777/api/v1/sklad/global/add',
-      {
-        product: product.value,
-        companyName: companyName.value,
-        fridge: fridge.value,
-        date: date.value,
-        time: time.value,
-        weight: weight.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      }
-    );
+    const response = await $host.post('/sklad/global',{
+      product: product.value,
+      companyName: companyName.value,
+      fridge: fridge.value,
+      date: date.value,
+      time: time.value,
+      weight: weight.value,
+    });
     data.value = response.data;
     weight.value = '';
     fridge.value = '';
     success.value = true;
     loading.value = false;
   } catch (error) {
-    if (error.response.status === 401) {
-      window.location.href = '/logout';
-    }
+    console.log(error);
     loading.value = false;
   }
 }

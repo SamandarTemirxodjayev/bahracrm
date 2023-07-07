@@ -7,11 +7,10 @@ const Global = require("../models/Globals.js");
 const Records = require("../models/Records.js");
 const Company = require("../models/Company.js");
 
-
 exports.login = async (req, res) => {
   console.log("login");
   const { login, password } = req.body;
-  if(!login ||!password) {
+  if (!login || !password) {
     return res.status(400).json({ message: "Please fill all fields" });
   }
   try {
@@ -25,7 +24,9 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
 
-    const token = jwt.sign({ data: user.login }, "secret", { expiresIn: "12h" });
+    const token = jwt.sign({ data: user.login }, "secret", {
+      expiresIn: "12h",
+    });
     res.json({ token });
   } catch (err) {
     return res.status(500).json({ message: "Error when find user" });
@@ -46,7 +47,7 @@ exports.register = async (req, res) => {
     }
 
     let loginPrefix = "";
-  
+
     if (user_level == 1) {
       loginPrefix = "admin_";
     } else if (user_level == 2) {
@@ -60,10 +61,10 @@ exports.register = async (req, res) => {
     } else if (user_level == 6) {
       loginPrefix = "razdelka_";
     }
-  
+
     let isUnique = false;
     let randomLogin = "";
-  
+
     while (!isUnique) {
       randomLogin = passwordGenerator.generator(10);
       try {
@@ -72,21 +73,23 @@ exports.register = async (req, res) => {
           isUnique = true;
         }
       } catch (err) {
-        return res.status(500).json({ message: "Internal server error when finding login" });
+        return res
+          .status(500)
+          .json({ message: "Internal server error when finding login" });
       }
     }
-  
+
     loginPrefix += randomLogin;
     const randomPassword = passwordGenerator.generator(10);
-  
+
     const newUser = new Users({
       login: loginPrefix,
       password: randomPassword,
       user_level,
       name,
-      surname
+      surname,
     });
-  
+
     await newUser.save();
 
     return res.json({
@@ -94,10 +97,12 @@ exports.register = async (req, res) => {
       password: randomPassword,
       user_level,
       name,
-      surname
+      surname,
     });
   } catch (err) {
-    return res.status(500).json({ message: "Internal server error when saving user" });
+    return res
+      .status(500)
+      .json({ message: "Internal server error when saving user" });
   }
 };
 exports.userinfo = async (req, res) => {
@@ -129,7 +134,7 @@ exports.user = async (req, res) => {
   console.log("user");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const user = await Users.findOne({ _id: req.params.id });
@@ -145,7 +150,7 @@ exports.editUser = async (req, res) => {
   console.log("editUser");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const user = await Users.findOne({ _id: req.params.id });
@@ -189,7 +194,7 @@ exports.createFridge = async (req, res) => {
     const newFridge = new Fridge({
       name: req.body.name,
     });
-  
+
     await newFridge.save();
     return res.json(newFridge);
   } catch (error) {
@@ -200,7 +205,7 @@ exports.getFridges = async (req, res) => {
   console.log("getFridges");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridges = await Fridge.find({}).populate("products.productId");
@@ -213,7 +218,7 @@ exports.getFridgeId = async (req, res) => {
   console.log("getFridgeId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridge = await Fridge.findOne({ _id: req.params.id });
@@ -229,7 +234,7 @@ exports.updateFridge = async (req, res) => {
   console.log("updateFridge");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridge = await Fridge.findOne({ _id: req.params.id });
@@ -247,7 +252,7 @@ exports.deleteFridge = async (req, res) => {
   console.log("deleteFridge");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const fridge = await Fridge.findOne({ _id: req.params.id });
@@ -265,13 +270,13 @@ exports.createProduct = async (req, res) => {
   console.log("createProduct");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const newProduct = new Global({
       name: req.body.name,
     });
-  
+
     await newProduct.save();
     return res.json(newProduct);
   } catch (error) {
@@ -282,7 +287,7 @@ exports.getProducts = async (req, res) => {
   console.log("getProducts");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const products = await Global.find({});
@@ -295,7 +300,7 @@ exports.getProductId = async (req, res) => {
   console.log("getProductId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1 ) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const product = await Global.findOne({ _id: req.params.id });
@@ -311,7 +316,7 @@ exports.updateProductId = async (req, res) => {
   console.log("updateProductId");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const product = await Global.findOne({ _id: req.params.id });
@@ -329,7 +334,7 @@ exports.deleteProduct = async (req, res) => {
   console.log("deleteProduct");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const product = await Global.findOne({ _id: req.params.id });
@@ -373,7 +378,7 @@ exports.lasthistory20 = async (req, res) => {
     if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
-    
+
     const history = await History.find()
       .sort({ _id: -1 })
       .limit(20)
@@ -381,7 +386,7 @@ exports.lasthistory20 = async (req, res) => {
       .populate("company")
       .populate("do.productId")
       .populate("do.fridge");
-      
+
     return res.json(history);
   } catch (error) {
     console.log(error);
@@ -392,7 +397,7 @@ exports.historywithid = async (req, res) => {
   console.log("historywithid");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const history = await History.find({ userId: req.params.id })
@@ -401,7 +406,32 @@ exports.historywithid = async (req, res) => {
       .populate("company")
       .populate("do.productId")
       .populate("do.fridge")
-      .sort({ _id: -1 });
+      .sort({ _id: -1 })
+      .limit(20);
+    if (!history) {
+      return res.status(400).json({ message: "History not found" });
+    }
+    return res.json(history);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+exports.historywithcompanyid = async (req, res) => {
+  console.log("historywithcompanyid");
+  try {
+    const currentUser = await Users.findOne({ login: req.userId });
+    if (!currentUser || currentUser.user_level !== 1) {
+      return res.status(400).json({ message: "Not allowed" });
+    }
+    const history = await History.find({ company: req.params.id })
+      .populate("userId")
+      .populate("userId")
+      .populate("company")
+      .populate("do.productId")
+      .populate("do.fridge")
+      .sort({ _id: -1 })
+      .limit(20);
     if (!history) {
       return res.status(400).json({ message: "History not found" });
     }
@@ -413,10 +443,10 @@ exports.historywithid = async (req, res) => {
 };
 exports.getRecord = async (req, res) => {
   console.log("getRecord");
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const records = await Records.findById(id);
@@ -429,10 +459,16 @@ exports.getRecords = async (req, res) => {
   console.log("getRecords");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
-    const records = await Records.find().populate("rows.product").populate("rows.fridge").populate("about.product").populate("about.fridge").populate("userId");
+    const records = await Records.find()
+      .populate("rows.product")
+      .populate("rows.fridge")
+      .populate("about.product")
+      .populate("about.fridge")
+      .populate("userId")
+      .limit(20);
     return res.json(records);
   } catch (error) {
     console.log(error);
@@ -442,14 +478,14 @@ exports.addCompany = async (req, res) => {
   console.log("addCompany");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const newCompany = new Company({
       name: req.body.name,
       type: req.body.type,
     });
-  
+
     await newCompany.save();
     return res.json(newCompany);
   } catch (error) {
@@ -460,7 +496,7 @@ exports.getCompany = async (req, res) => {
   console.log("getCompanies");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const companies = await Company.find({});
@@ -473,7 +509,7 @@ exports.getCompanyById = async (req, res) => {
   console.log("getCompanyById");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const importt = await Company.findOne({ _id: req.params.id });
@@ -489,7 +525,7 @@ exports.deleteCompany = async (req, res) => {
   console.log("deleteCompany");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const importt = await Company.findOne({ _id: req.params.id });
@@ -507,7 +543,7 @@ exports.updateCompany = async (req, res) => {
   console.log("updateCompany");
   try {
     const currentUser = await Users.findOne({ login: req.userId });
-    if (!currentUser || currentUser.user_level!== 1) {
+    if (!currentUser || currentUser.user_level !== 1) {
       return res.status(400).json({ message: "Not allowed" });
     }
     const importt = await Company.findOne({ _id: req.params.id });

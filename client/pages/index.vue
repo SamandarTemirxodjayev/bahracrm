@@ -43,10 +43,4 @@ onMounted(async () => {
     loading.value = false;
   }
 });
-
-const logout = () => {
-  loading.value = true;
-  localStorage.removeItem("token");
-  window.location.href = "/login";
-}
 </script>

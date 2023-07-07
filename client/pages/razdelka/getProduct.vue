@@ -68,70 +68,39 @@ const updateTimeAndDate = () => {
   time.value = now.toLocaleTimeString();
   date.value = now.toLocaleDateString();
 };
-
 onMounted(async () => {
-  let token = localStorage.getItem('token');
-  if (!token) {
-    window.location.href = '/login';
-  } else {
-    try {
-      const response = await axios.post(
-        'http://localhost:7777/api/v1/userInfo',
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 6) {
-        window.location.href = '/';
-      }
-      const productResponse = await axios.post('http://localhost:7777/api/v1/razdelka/product/get', null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      const fridgeResponse = await axios.post('http://localhost:7777/api/v1/razdelka/fridge/get', null, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      products.value = productResponse.data;
-      fridges.value = fridgeResponse.data;
-      loading.value = false;
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = '/logout';
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 6) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const fridgesResponse = await $host.get("/razdelka/fridge");
+    fridges.value = fridgesResponse.data;
+    const productResponse = await $host.get("/razdelka/product");
+    products.value = productResponse.data;
+  } catch (error) {
+    console.log(error);
   }
+  loading.value = false;
   updateTimeAndDate(); // Call the method to set initial values
-  setInterval(updateTimeAndDate, 500); 
+  setInterval(updateTimeAndDate, 500);
 });
 const handleSubmit = async (e) => {
   e.preventDefault();
   loading.value = true;
   try {
-    const response = await axios.post(
-      'http://localhost:7777/api/v1/razdelka/global/get',
-      {
-        product: product.value,
-        fridge: fridge.value,
-        date: date.value,
-        time: time.value,
-        weight: weight.value,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      }
-    );
+    const response = await $host.put('/razdelka/global',{
+      product: product.value,
+      fridge: fridge.value,
+      date: date.value,
+      time: time.value,
+      weight: weight.value,
+    });
     // localStorage.setItem()
     let succes = {
       product: product.value,
+      productName: response.data.name,
       fridge: fridge.value,
       date: date.value,
       time: time.value,
@@ -146,9 +115,7 @@ const handleSubmit = async (e) => {
   } catch (error) {
     errorText.value = "Mahsulot yetarlicha emas";
     errort.value = true;
-    if (error.response.status === 401) {
-      window.location.href = '/logout';
-    }
+    console.log(error);
     loading.value = false;
   }
 }

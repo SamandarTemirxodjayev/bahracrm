@@ -52,47 +52,21 @@
 
 
 <script setup>
-import axios from "axios";
-
 let loading = ref(true);
 let data = ref([]);
 
 onMounted(async () => {
-  let token = localStorage.getItem("token");
-  if (!token) {
-    window.location.href = "/login";
-  } else {
-    try {
-      const response = await axios.post(
-        "http://localhost:7777/api/v1/userInfo",
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      if (response.data.user_level !== 1) {
-        window.location.href = "/";
-      }else{
-        try {
-          const res = await axios.post("http://localhost:7777/api/v1/admin/get/records", null, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          })
-          data.value = res.data;
-          console.log(res.data);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+  try {
+    const res = await $host.post("/userInfo");
+    if (res.data.user_level !== 1) {
+      window.location.href = "/";
+      return;
     }
-    loading.value = false;
+    const response = await $host.get("/admin/records");
+    data.value = response.data;
+  } catch (error) {
+    console.log(error);
   }
-});
+  loading.value = false;
+}); 
 </script>
