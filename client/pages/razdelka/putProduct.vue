@@ -176,15 +176,7 @@ onMounted(async () => {
       }
       const productResponse = await $host.get("/razdelka/product");
       const fridgeResponse = await $host.get("/razdelka/fridge");
-      const razdelkaResponse = await axios.post(
-        "http://localhost:7777/api/v1/razdelka/product/get/" + razdelka.product,
-        null,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const razdelkaResponse = await $host.get("/razdelka/product/" + razdelka.product);
       razdelka.product = razdelkaResponse.data.name;
       products.value = productResponse.data;
       fridges.value = fridgeResponse.data;
@@ -193,9 +185,7 @@ onMounted(async () => {
       rows = leocla;
       calculateMusur();
     } catch (error) {
-      if (error.response.status === 401) {
-        window.location.href = "/logout";
-      }
+      console.log(error);
     }
     loading.value = false;
   }

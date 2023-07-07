@@ -5,7 +5,7 @@ const UserMiddleware = require("../middleware/userMiddleware");
 
 router.get("/fridge", UserMiddleware, razdelkaController.getFridges);
 router.get("/product", UserMiddleware, razdelkaController.getProducts);
-router.post("/product/get/:id", UserMiddleware, razdelkaController.getProduct);
+router.get("/product/:id", UserMiddleware, razdelkaController.getProduct);
 router.post("/global/add", UserMiddleware, razdelkaController.addGlobal);
 router.put("/global", UserMiddleware, razdelkaController.getGlobal);
 router.get("/history", UserMiddleware, razdelkaController.historyalast20);
